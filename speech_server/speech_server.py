@@ -70,7 +70,7 @@ class SpeechServer:
   speech_speak_multispeaker_synthesis_inference_location = "../../multispeaker_synthesis/production_inference"
   speech_speak_multispeaker_synthesis_inference_class_name = "MultispeakerSynthesis"
   speech_speak_multispeaker_synthesis_models_location = "../../multispeaker_synthesis/production_models"
-  speech_speak_multispeaker_synthesis_speakers_location = "../../multispeaker_synthesis_speakers"
+  speech_speak_multispeaker_synthesis_speakers_location = "../multispeaker_synthesis_speakers"
   speech_speak_multispeaker_synthesis_model_num = "model1"
   speech_speak_multispeaker_synthesis_speaker = "eleanor"
   speech_speak_use_multispeaker_synthesis = None
