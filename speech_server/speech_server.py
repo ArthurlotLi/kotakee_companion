@@ -48,6 +48,7 @@ class SpeechServer:
   speech_speak_shutdown_location = "./assets/shutdown.wav"
   speech_speak_timer_location = "./assets/timer.wav"
   speech_speak_alarm_location = "./assets/timer.wav"
+  speech_speak_wait_location = "./assets/waiting.wav"
   speech_speak_use_python3 = None
 
   # Which model to use for emotion detection + emotion representation
@@ -71,7 +72,7 @@ class SpeechServer:
   speech_speak_multispeaker_synthesis_models_location = "../../multispeaker_synthesis/production_models"
   speech_speak_multispeaker_synthesis_speakers_location = "../../multispeaker_synthesis_speakers"
   speech_speak_multispeaker_synthesis_model_num = "model1"
-  speech_speak_multispeaker_synthesis_speaker = "me"
+  speech_speak_multispeaker_synthesis_speaker = "eleanor"
   speech_speak_use_multispeaker_synthesis = None
 
   speech_listen_led_state_on = 1
@@ -101,10 +102,6 @@ class SpeechServer:
     self.speech_speak_use_python3 = speech_speak_use_python3
     self.speech_speak_use_emotion_representation = speech_speak_use_emotion_representation
     self.speech_speak_use_emotion_representation_reduced = speech_speak_use_emotion_representation_reduced
-
-    # TODO: Once this is ready, remove this hard-coded line.
-    use_multispeaker_synthesis = False
-
     self.speech_speak_use_multispeaker_synthesis = use_multispeaker_synthesis
 
   #
@@ -119,7 +116,7 @@ class SpeechServer:
     if self.initialize_components_full() is False:
       print("[ERROR] Initialization failed. Unable to execute speech server correctly. Exiting...")
       return
-    self.speech_speak.background_speak_event(event_type="speak_text", event_content="Kotakee AI Companion Online. Utilizing hotword model variant " + str(self.trigger_word_iternum) + ".")
+    self.speech_speak.background_speak_event(event_type="speak_text", event_content="Kotakee AI Companion Online. Utilizing hot word model variant " + str(self.trigger_word_iternum) + ".")
     
     # Initialization succeeded. Execute runtime functions. 
     self.hotword_trigger_word.listen_hotword()
@@ -187,6 +184,7 @@ class SpeechServer:
       shutdown_location=self.speech_speak_shutdown_location,
       timer_location=self.speech_speak_timer_location,
       alarm_location=self.speech_speak_alarm_location,
+      wait_location = self.speech_speak_wait_location,
 
       emotion_detection_location=self.speech_speak_emotion_detection_location,
       emotion_detection_class_name = self.speech_speak_emotion_detection_class_name,
@@ -280,14 +278,14 @@ if __name__ == "__main__":
   parser.add_argument('-p', action='store_true', default=False)
   parser.add_argument('-e', action='store_true', default=False)
   parser.add_argument('-er', action='store_true', default=False)
-  parser.add_argument('-t', action='store_true', default=False)
+  parser.add_argument('-s', action='store_true', default=False)
   args = parser.parse_args()
 
   trigger_word_iternum = int(args.iternum)
-  use_python3 = not args.p == True
-  use_emotion_representation = not args.e == True
+  use_python3 = args.p == False
+  use_emotion_representation = args.e == False
   use_emotion_representation_reduced = args.er
-  use_multispeaker_synthesis = not args.t == True
+  use_multispeaker_synthesis = args.s == False
 
   speech_server = SpeechServer(
     trigger_word_iternum=trigger_word_iternum, 

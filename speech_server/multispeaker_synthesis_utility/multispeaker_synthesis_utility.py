@@ -101,7 +101,7 @@ class MultispeakerSynthesisUtility:
     texts = self._preprocess_texts(texts)
 
     # Get the filepath to the wav or embedding for this utterance.
-    utterance_location = speakers_location + "/" + speaker_id + "/" + utterance_id
+    utterance_location = self.speakers_location + "/" + speaker_id + "/" + utterance_id
     
     embeds_fpath = Path(utterance_location + ".npy")
     if embeds_fpath.exists():
@@ -116,12 +116,11 @@ class MultispeakerSynthesisUtility:
 
     print("[DEBUG] MultispeakerSynthesisUtility - Completed in %.4f seconds." % (time.time() - start_time))
     
-    # We have the wavs. Let's play the audio. 
-    self._play_wav(wavs)
+    return wavs
 
   # Given a list of npy arrays, write each wav into a temporry file
   # and execute them one after the other. 
-  def _play_wav(self, wavs):
+  def play_wav(self, wavs):
     # Helper function so we make sure pyaudio releases the wav file
     # so we can delete it.
     def play_wavs(self, wavs):

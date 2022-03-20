@@ -59,6 +59,7 @@ class SpeechSpeak:
   shutdown_location = None
   timer_location = None
   alarm_location = None
+  wait_location = None
 
   web_server_status = None
 
@@ -94,7 +95,7 @@ class SpeechSpeak:
   multispeaker_synthesis_models_location = None
   multispeaker_synthesis_speakers_location = None
 
-  def __init__(self, web_server_status, chime_location, startup_location, shutdown_location, timer_location, alarm_location, 
+  def __init__(self, web_server_status, chime_location, startup_location, shutdown_location, timer_location, alarm_location, wait_location,
                emotion_detection_location, emotion_detection_class_name, emotion_detection_model_variants_location,
                emotion_representation_location, emotion_representation_class_name, 
                multispeaker_synthesis_location, multispeaker_synthesis_class_name,
@@ -115,6 +116,8 @@ class SpeechSpeak:
     self.shutdown_location = shutdown_location
     self.timer_location = timer_location
     self.alarm_location = alarm_location
+    self.wait_location = wait_location
+
     self.use_python3 = use_python3
     self.use_emotion_representation_reduced = use_emotion_representation_reduced
 
@@ -133,10 +136,6 @@ class SpeechSpeak:
     self.multispeaker_synthesis_speaker = multispeaker_synthesis_speaker
     self.multispeaker_synthesis_models_location = multispeaker_synthesis_models_location
     self.multispeaker_synthesis_speakers_location = multispeaker_synthesis_speakers_location
-
-    if self.initialize_subprocess() is False:
-      print("[ERROR] Failed to initialize subprocess. Speech Server initialization failed.")  
-      return
 
     # Emotion Detection + Representation.
     if (self.intTryParse(self.emotion_detection_model_num) and int(self.emotion_detection_model_num) < 0) or use_emotion_representation is False:
@@ -178,6 +177,13 @@ class SpeechSpeak:
         self.multispeaker_synthesis_enabled = True
       else:
         print("[ERROR] Failed to import Multispeaker Synthesis.")
+
+    # Initialize pyttsx3 subprocess if we are not using multispeaker 
+    # synthesis. 
+    if self.multispeaker_synthesis_enabled is False:
+      if self.initialize_subprocess() is False:
+        print("[ERROR] Failed to initialize subprocess. Speech Server initialization failed.")  
+        return
 
     # Get the show on the road!
     self.initialize_speak_thrd()
@@ -314,7 +320,10 @@ class SpeechSpeak:
   # execute the action. 
   def handle_speak_event(self, event_type, event_content):
     if event_type == "speak_text":
-      self.speak_text(event_content)
+      if self.multispeaker_synthesis_enabled:
+        self.synthesize_text(event_content)
+      else:
+        self.speak_text(event_content)
     elif event_type == "emote":
       self.emote(event_content)
     elif event_type == "emote_stop":
@@ -331,8 +340,44 @@ class SpeechSpeak:
       self.execute_timer()
     elif event_type == "execute_alarm":
       self.execute_alarm()
+    elif event_type == "execute_waiting":
+      self.execute_waiting()
     else:
       print("[ERROR] Speak thrd recieved an unknown event type '" + str(event_type)+ "'!")
+
+  # Converts text to speech using multispeaker synthesis project.
+  # Emotion Detection may be used in this routine for two reasons -
+  # Emotion Representation or to inject an emotion prior into the 
+  # speaker synthesis process. 
+  def synthesize_text(self, output_text):
+    if(output_text is not None and output_text != ""):
+      print("[DEBUG] Speech Speak - Synthesizing output text: \"%s\"." % output_text)
+
+      # Ping a noise to indicate that we're processing the output
+      # text. 
+      self.execute_waiting()
+
+      emotion_category = "neutral"
+
+      if False is True: # TODO: Enable this if statement if emotion priors are enabled.
+        emotion_category = self._emotion_detection_representation(output_text, represent=False)
+      
+      wavs = self.multispeaker_synthesis.speaker_synthesize_speech(texts=[output_text], 
+                                                                  speaker_id = self.multispeaker_synthesis_speaker,
+                                                                  utterance_id = emotion_category)
+
+      # Execute representation.
+      # TODO: This should probably happen in a different thread.
+      if self.emotion_detection_representation_enabled:
+        if False is True:
+          self._emotion_detection_representation(output_text, emotion_category = emotion_category)
+        else:
+          self._emotion_detection_representation(output_text)
+    
+      self.multispeaker_synthesis.play_wav(wavs)
+
+      self.emote_stop()
+      print("[DEBUG] Speak Speak text synthesis complete.")
 
   # Convert text to speech using pyttsx3 engine. Note calling this by 
   # itself causes a block on the main thread. 
@@ -353,18 +398,7 @@ class SpeechSpeak:
       # While the text is outputting, predict the emotion category
       # of the text (if enabled)
       if self.emotion_detection_representation_enabled:
-        start_time = time.time()
-        # Pass in sunrise/sunset info from web server. 
-        sunrise_hours, sunrise_minutes, sunset_hours, sunset_minutes = self.web_server_status.get_sunrise_sunset_time()
-        emotion_category = self.emotion_detection.predict_emotion(text=output_text)
-        self.emotion_representation.start_display_emotion(
-          emotion_category=emotion_category, 
-          sunrise_hours=sunrise_hours, 
-          sunrise_minutes=sunrise_minutes, 
-          sunset_hours=sunset_hours, 
-          sunset_minutes=sunset_minutes)
-        end_time = time.time()
-        print("[DEBUG] Speech Speak Emotion Detection + Representation routine duration: " + str(end_time-start_time) + " seconds.")
+        self._emotion_detection_representation(output_text, represent=True)
 
       # Wait for the subprocess to reply with anything. When you
       # do get that message, continue. Contents are ignored. 
@@ -376,6 +410,27 @@ class SpeechSpeak:
       connection.close()
       end_time = time.time()
       print("[DEBUG] Speak Speak text output complete. Blocking duration: " + str(end_time-start_time) + " seconds.")
+
+  # Allows for emotion representation to take place. Alternatively, if
+  # represent is false, only predicts the emotion and provides the emotion
+  # category as a return value. Allows users to specify an emotion
+  # category in advance as well.
+  def _emotion_detection_representation(self, output_text, represent=True, emotion_category=None):
+    start_time = time.time()
+    # Pass in sunrise/sunset info from web server. 
+    if emotion_category is None:
+      emotion_category = self.emotion_detection.predict_emotion(text=output_text)
+    if represent:
+      sunrise_hours, sunrise_minutes, sunset_hours, sunset_minutes = self.web_server_status.get_sunrise_sunset_time()
+      self.emotion_representation.start_display_emotion(
+        emotion_category=emotion_category, 
+        sunrise_hours=sunrise_hours, 
+        sunrise_minutes=sunrise_minutes, 
+        sunset_hours=sunset_hours, 
+        sunset_minutes=sunset_minutes)
+    end_time = time.time()
+    print("[DEBUG] Speech Speak Emotion Detection + Representation routine duration: %.4f seconds." % (end_time-start_time))
+    return emotion_category
 
   # Allows other classes to direct emotion representation output.
   # For example, Speech Listen wanting to change the played video
@@ -424,6 +479,9 @@ class SpeechSpeak:
 
   def execute_alarm(self):
     self.execute_sound(self.alarm_location)
+  
+  def execute_waiting(self):
+    self.execute_sound(self.wait_location)
 
   # Let out a chime to indicate that you're listening. Source:
   # stack overflow
