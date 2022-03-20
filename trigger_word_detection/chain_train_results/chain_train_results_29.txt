@@ -1,0 +1,11 @@
+=================================
+Chain Train Results
+=================================
+
+13320 - iternum:13320  model_learning_rate:0.0002  model_epochs:2500  
+13340 - iternum:13340  model_learning_rate:0.0002  model_epochs:2500  dataset_size:9000  max_negatives:4  force_create:True  
+13360 - iternum:13320  model_learning_rate:0.0002  model_epochs:2500  model_gru_1:192  model_gru_2:192  
+13380 - iternum:13380  model_learning_rate:0.0002  model_epochs:2500  dataset_size:9000  max_positives:9  min_positives:1  max_negatives:9  min_negatives:1  force_create:True  
+13400 - iternum:13380  model_learning_rate:0.0002  model_epochs:2500  model_gru_1:192  model_gru_2:192  dataset_size:9000  max_positives:9  min_positives:1  max_negatives:9  min_negatives:1  force_create:True  
+13420 - iternum:13320  model_learning_rate:0.0001  model_epochs:2500  
+

@@ -1,0 +1,36 @@
+# Speech Server reqs 
+# (WARNING pyaudio must be installed differently. See README)
+speechrecognition
+pyttsx3
+
+# Trigger Word Detection reqs:
+numpy
+keras
+h5py
+pydub
+scipy
+matplotlib
+IPython
+tensorflow
+
+# QuestAI reqs:
+# (WARNING torch must be installed differently. See README)
+tensorflow_hub 
+transformers 
+wikipedia 
+pynytimes 
+jsonlines 
+pytextrank 
+spacy
+
+# ChatAi reqs:
+simpletransformers
+
+# Emotion Representaiton reqs:
+opencv-python
+opencv-contrib-python 
+
+# PianoPlayer reqs:
+mido
+pygame
+python-rtmidi

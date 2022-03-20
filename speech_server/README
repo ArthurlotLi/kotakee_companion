@@ -1,0 +1,115 @@
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+KotakeeOS - Home Management System
+Speech Recognition Application Server
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+Description:
+
+Root program for speech recognition application server designed to interface 
+with the KotakeeOS Web Server. This sends requests to activate-deactivate 
+modules just like any other regular web application. 
+
+------------------------------------------------------------------------------
+Prerequisites
+------------------------------------------------------------------------------
+
+1. Python3
+2. python3 -m pip install speechrecognition
+3. python3 -m pip install pyttsx3
+4. (mac/linux) brew install portaudio
+   (windows) pip install pipwin
+5. (mac/linux) python3 -m pip install pyaudio
+   (windows) pipwin install pyaudio
+
+If using PocketSphinx: 
+
+6. brew install swig
+7. brew install openal-soft
+8. **Note the stuff you may need to do to install pockeshpinx manually:
+   https://github.com/bambocher/pocketsphinx-python/issues/28
+
+If using homebrewed Trigger Word models:
+
+9. pip3 install -r requirements.txt
+10. **You may need to install more requirements beyond these. 
+
+Once you've installed those, the TriggerWord speech server should work
+just fine. 
+
+------------------------------------------------------------------------------
+Quest AI Setup
+------------------------------------------------------------------------------
+RoBERTa-powered Natural Language Processing introductory project. Given a 
+yes/no question, use various internet sources for context before using 
+RoBERTa to derive a boolean response. 
+
+To use QuestAI, you need to make sure you do some manual steps to allow your
+local environment to function correctly.
+
+1. Install pytorch. If you wish to use CUDA, you must go to pytorch.org. 
+   otherwise, run:
+  
+   pip install torch
+
+2. Install everything required by QuestAI. Run:
+
+   pip install -r requirements.txt 
+   or
+   pip install tensorflow_hub transformers wikipedia pynytimes jsonlines pytextrank spacy --upgrade
+
+3. Install spacy separately (because it's kinda silly) with this link:
+
+   python -m spacy download en
+
+4. Manually acquire roberta-large_fine-tuned and insert it inside the 
+   ./quest_ai/quest_ai_dependencies folder. Alternatively, if it's still up, 
+   you can get it from the following link:
+
+   https://onedrive.live.com/download?cid=61FC7243E093B36A&resid=61FC7243E093B36A%211286&authkey=ALT4NEljIrPRmHk
+
+------------------------------------------------------------------------------
+Chat AI Setup
+------------------------------------------------------------------------------
+Transformers powered Natural Language Processing introductory
+project utilizing the Persona-Chat dataset to fine tune a ConvAIModel,
+with a base pretrained model weights provided by Hugging Face. 
+
+To use ChatAI, you need to make sure to do some manual steps to allow your
+local environment to function correctly. 
+
+1. Make sure you have transformers and simpletransformers.
+
+   pip install -r requirements.txt 
+   or
+   pip install transformers simpletransformers
+
+2. Manually acquire Hugging Face's pretrained ConvAIModel and export all
+   contents into the ./chat_ai/chat_ai_dependencies/gpt_personachat_cache
+   folder (which may need to be created). The files may be downloaded 
+   directly:
+
+   https://s3.amazonaws.com/models.huggingface.co/transfer-learning-chatbot/gpt_personachat_cache.tar.gz 
+
+------------------------------------------------------------------------------
+Emotion Detection AI Setup
+------------------------------------------------------------------------------
+RoBERTa Large powered Natural Language Processing project. Given a
+line of text, predict the emotion category under which that text falls 
+under. Based upon the Paul Ekman Discrete Emotion Model (DEM) of human 
+emotion with 6 categories, alongside an additional "neutral" category. 
+
+Implemented as part of KotakeeOS Speech Server with a companion Emotion 
+Representation class that is tied into the server's ability to output
+speech. That is to say whenever the program says anything, an accompanying
+emotion will be predicted and presented to the user with a visual 
+representation. 
+
+To use EmotionDetectionAI, you need to make sure you do some manual steps to allow your
+local environment to function correctly.
+
+1. Manually acquire trained model variant place inside the following
+   path: 
+
+   ../emotion_detection/models

@@ -1,0 +1,6 @@
+=================================
+Chain Train Results
+=================================
+
+14060 - iternum:13940  model_learning_rate:0.00011  model_epochs:15000  dataset_size:9000  max_negatives:4  model_conv1d:256  model_gru_1:256  model_gru_2:256  model_hidden_dropout:0.5  
+

@@ -1,0 +1,15 @@
+{
+  "class_name" : "SimpleUtilities",
+
+  "require_online" : "False",
+  "require_web_server" : "False",
+  "dispose_timeout" : "-1",
+  "init_on_startup" : "True",
+  "init_runtime_message" : "",
+  "init_runtime_triggers" : [],
+
+  "require_speech_speak" : "True",
+  "require_speech_listen" : "True",
+  "require_web_server_status" : "True",
+  "require_interaction_passive": "True"
+}

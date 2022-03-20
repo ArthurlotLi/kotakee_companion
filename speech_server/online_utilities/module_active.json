@@ -1,0 +1,15 @@
+{
+  "class_name" : "OnlineUtilites",
+
+  "require_online" : "True",
+  "require_web_server" : "False",
+  "dispose_timeout" : "-1",
+  "init_on_startup" : "True",
+  "init_runtime_message" : "",
+  "init_runtime_triggers" : [],
+
+  "require_speech_speak" : "True",
+  "require_speech_listen" : "False",
+  "require_web_server_status" : "False",
+  "require_interaction_passive": "False"
+}

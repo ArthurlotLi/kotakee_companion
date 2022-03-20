@@ -1,0 +1,9 @@
+=================================
+Chain Train Results
+=================================
+
+13500 - iternum:13500  model_learning_rate:0.0002  model_epochs:2500  dataset_size:9000  max_negatives:6  force_create:True  
+13520 - iternum:13520  model_learning_rate:0.0002  model_epochs:2500  dataset_size:9000  max_positives:4  min_positives:1  max_negatives:4  min_negatives:1  force_create:True  
+
+13500 Train Accuracy: 99.80493784 Dev Accuracy: 97.50165939 Time: 18.5394 hrs
+13520 Train Accuracy: 99.78002906 Dev Accuracy: 96.65359855 Time: 18.7013 hrs

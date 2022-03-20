@@ -1,0 +1,23 @@
+=================================
+Chain Train Results
+=================================
+
+12151 - iternum:12051  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12152 - iternum:12052  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12153 - iternum:12053  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12154 - iternum:12054  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12155 - iternum:12055  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12156 - iternum:12056  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12157 - iternum:12057  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12158 - iternum:12058  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+12159 - iternum:12059  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:800  batch_size:32  validation_split:0.2  
+
+12151 Train Accuracy: 98.02882075 Dev Accuracy: 90.81308842 Time: 1.2172 hrs
+12152 Train Accuracy: 98.40539694 Dev Accuracy: 92.28218198 Time: 1.0185 hrs
+12153 Train Accuracy: 98.69548082 Dev Accuracy: 92.87563562 Time: 1.0279 hrs
+12154 Train Accuracy: 98.81207943 Dev Accuracy: 92.16290712 Time: 0.9864 hrs
+12155 Train Accuracy: 98.55601192 Dev Accuracy: 92.56727099 Time: 1.0322 hrs
+12156 Train Accuracy: 98.18453789 Dev Accuracy: 91.65381789 Time: 0.9836 hrs
+12157 Train Accuracy: 98.59921336 Dev Accuracy: 91.80799723 Time: 0.9853 hrs
+12158 Train Accuracy: 98.35626483 Dev Accuracy: 92.24145412 Time: 1.0274 hrs
+12159 Train Accuracy: 98.28374982 Dev Accuracy: 91.41818285 Time: 0.9910 hrs

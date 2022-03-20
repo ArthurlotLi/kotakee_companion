@@ -1,0 +1,7 @@
+=================================
+Chain Train Results
+=================================
+
+12172 - iternum:12072  learning_rate:0.0001  loss_function:binary_crossentropy  epochs:1600  batch_size:32  validation_split:0.2  
+
+12172 Train Accuracy: 99.71580505 Dev Accuracy: 92.99491048 Time: 12.4076 hrs

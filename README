@@ -1,0 +1,35 @@
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+Kotakee Companion - Humanity's Companion
+MAIN REPOSITORY
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+Description:
+
+Home assistant platform. 
+
+------------------------------------------------------------------------------
+Prerequisites
+------------------------------------------------------------------------------
+
+1. Python3 must be installed - version 3.8.X
+2. Speech Recognition - PyAudio and Speech Recognition modules are required.
+   Utilize requirements.txt file found within ./speech_server
+3. AI/ML - specific modules must be installed. Utilize requirements.txt file 
+   found within ./trigger_word_detection. Tensorflow 2.X required.
+4. PocketSphinx speech detection - appropriate dependencies are required.
+
+Note that, on mac,
+you might need to update your xcode command line tools. If you have issues
+with that, reference the following to delete and redownload xcode tools:
+
+https://stackoverflow.com/questions/34617452/how-to-update-xcode-from-command-line
+
+--------------------------------<Files>--------------------------------------
+
+speech_server (dir)        : Voice control programs intended to interface 
+                             with the primary web server.
+trigger_word_detection (dir) : AI/ML endeavor to implement personal "hot word" 
+                             detection, utilized with speechserver components. 
+

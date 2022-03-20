@@ -1,0 +1,15 @@
+{
+  "class_name" : "ChatAiParsing",
+
+  "require_online" : "False",
+  "require_web_server" : "False",
+  "dispose_timeout" : "120",
+  "init_on_startup" : "False",
+  "init_runtime_message" : "Initializing ChatAI, please wait.",
+  "init_runtime_triggers" : ["chat", "chatbot", "talk"],
+
+  "require_speech_speak" : "True",
+  "require_speech_listen" : "True",
+  "require_web_server_status" : "False",
+  "require_interaction_passive": "False"
+}

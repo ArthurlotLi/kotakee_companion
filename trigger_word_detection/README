@@ -1,0 +1,30 @@
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+KotakeeOS - Home Management System
+Trigger Word Detection
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+Description:
+
+The process for generating a new KotakeeOS deep learning model for use with
+real time voice input is as follows. (In broad terms)
+
+1. Generate raw_data samples and place in their respective folders in 
+raw_data. This has already been done once, so you can choose to add to the
+existing pool or create a new one (please don't toss anything away, though).
+
+2. Run trigger_word_detection.py. You will want to specify various parameters
+relating to both the creation of the dataset and the training of the model. 
+Rest assured that any dataset and model created will be saved and can be 
+reused. 
+
+3. With the new model created, go to speechServer/triggerWord and run the 
+python program with the iteration number that you used for the above step. 
+That's all there is to it. Repeat until you have a model that you love. 
+
+------------------------------------------------------------------------------
+Prerequisites
+------------------------------------------------------------------------------
+
+1. pip3 install -r requirements.txt 

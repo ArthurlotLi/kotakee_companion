@@ -1,0 +1,11 @@
+=================================
+Chain Train Results
+=================================
+
+12405 - iternum:12305  learning_rate:0.0002  loss_function:binary_crossentropy  epochs:2500  batch_size:32  validation_split:0.2  
+12406 - iternum:12305  learning_rate:0.0003  loss_function:binary_crossentropy  epochs:2500  batch_size:32  validation_split:0.2  
+12407 - iternum:12307  learning_rate:0.0002  loss_function:binary_crossentropy  epochs:2500  batch_size:32  validation_split:0.2  
+
+12405 Train Accuracy: 99.66819882 Dev Accuracy: 96.86962962 Time: 3.0697 hrs
+12406 Train Accuracy: 99.71956015 Dev Accuracy: 97.90019393 Time: 3.0256 hrs
+12407 Train Accuracy: 99.64836240 Dev Accuracy: 98.54699969 Time: 3.0328 hrs

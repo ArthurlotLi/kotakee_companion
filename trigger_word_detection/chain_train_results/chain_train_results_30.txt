@@ -1,0 +1,17 @@
+=================================
+Chain Train Results
+=================================
+
+13320 - iternum:13320  model_learning_rate:0.0002  model_epochs:2500  dataset_size:9000  force_create:True  
+13340 - iternum:13340  model_learning_rate:0.0002  model_epochs:2500  dataset_size:9000  max_negatives:4  force_create:True  
+13360 - iternum:13320  model_learning_rate:0.0002  model_epochs:2500  model_gru_1:192  model_gru_2:192  
+13380 - iternum:13380  model_learning_rate:0.0002  model_epochs:2500  dataset_size:9000  max_positives:9  min_positives:1  max_negatives:9  min_negatives:1  force_create:True  
+13400 - iternum:13380  model_learning_rate:0.0002  model_epochs:2500  model_gru_1:192  model_gru_2:192  dataset_size:9000  max_positives:9  min_positives:1  max_negatives:9  min_negatives:1  force_create:True  
+13420 - iternum:13320  model_learning_rate:0.0001  model_epochs:2500  
+
+13320 Train Accuracy: 99.80689883 Dev Accuracy: 97.21903801 Time: 19.4358 hrs
+13340 Train Accuracy: 99.80534911 Dev Accuracy: 97.21342325 Time: 18.5758 hrs
+13360 Train Accuracy: 99.91658330 Dev Accuracy: 96.85336351 Time: 24.6206 hrs
+13380 Train Accuracy: 99.71928000 Dev Accuracy: 97.08163738 Time: 19.0667 hrs
+13400 Train Accuracy: 99.88053441 Dev Accuracy: 97.02615142 Time: 25.2552 hrs
+13420 Train Accuracy: 99.74521995 Dev Accuracy: 97.02355266 Time: 22.0094 hrs

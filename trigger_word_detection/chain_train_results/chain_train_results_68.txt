@@ -1,0 +1,7 @@
+=================================
+Chain Train Results
+=================================
+
+14000 - iternum:13940  model_learning_rate:0.00012  model_epochs:3000  dataset_size:9000  max_negatives:4  model_conv1d:196  model_gru_1:102  model_gru_2:102  model_gru_3:102  model_gru_4:102  model_hidden_dropout:0.5  
+
+14000 EXECUTION FAILED!

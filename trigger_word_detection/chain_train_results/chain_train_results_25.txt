@@ -1,0 +1,7 @@
+=================================
+Chain Train Results
+=================================
+
+99997 - iternum:99999  model_learning_rate:0.0002  model_epochs:5  dataset_size:10  
+
+99997 Train Accuracy: 50.32727122 Dev Accuracy: 64.83367682 Time: 0.0198 hrs

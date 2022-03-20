@@ -1,0 +1,7 @@
+=================================
+Chain Train Results
+=================================
+
+13660 - iternum:13660  model_learning_rate:0.0002  model_epochs:3000  dataset_size:9000  max_negatives:4  force_create:True  model_gru_1:138  model_gru_2:138  
+
+13660 Train Accuracy: 99.86703992 Dev Accuracy: 98.15367460 Time: 30.0654 hrs

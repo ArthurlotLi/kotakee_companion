@@ -1,0 +1,12 @@
+=================================
+Chain Train Results
+=================================
+
+13200 - iternum:13010  model_learning_rate:0.0002  model_epochs:5  model_gru_1:160  model_gru_2:160  
+13220 - iternum:13010  model_learning_rate:0.0002  model_epochs:5  model_gru_1:64  model_gru_2:64  
+13240 - iternum:13010  model_learning_rate:0.0002  model_epochs:5  model_gru_1:192  model_gru_2:192  
+13260 - iternum:13060  model_learning_rate:0.0002  model_epochs:5  dataset_size:5  max_positives:9  
+13280 - iternum:13060  model_learning_rate:0.0002  model_epochs:5  dataset_size:5  max_positives:9  model_gru_1:160  model_gru_2:160  
+13300 - iternum:13010  model_learning_rate:0.0003  model_epochs:5  model_gru_1:160  model_gru_2:160  
+
+13200 Train Accuracy: 92.87299514 Dev Accuracy: 93.15468669 Time: 0.0840 hrs

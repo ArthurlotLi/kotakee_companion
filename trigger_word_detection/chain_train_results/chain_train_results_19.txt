@@ -1,0 +1,7 @@
+=================================
+Chain Train Results
+=================================
+
+13101 - iternum:12080  learning_rate:0.0005  loss_function:binary_crossentropy  epochs:2000  batch_size:32  validation_split:0.2  
+
+13101 Train Accuracy: 99.81766939 Dev Accuracy: 95.12417912 Time: 18.5681 hrs
