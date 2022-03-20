@@ -38,6 +38,7 @@ from interaction_active import InteractionActive
 from interaction_passive import InteractionPassive
 
 import argparse
+import time
 
 class SpeechServer:
   # Configurable constants passed down to components. 
@@ -117,7 +118,14 @@ class SpeechServer:
     if self.initialize_components_full() is False:
       print("[ERROR] Initialization failed. Unable to execute speech server correctly. Exiting...")
       return
-    self.speech_speak.background_speak_event(event_type="speak_text", event_content="Kotakee AI Companion Online. Utilizing hot word model variant " + str(self.trigger_word_iternum) + ".")
+    
+    # Greeting prompt.
+    current_hours = int(time.strftime("%H", time.localtime()))
+    if current_hours < 12: greeting_prefix = "Good morning"
+    elif current_hours < 18: greeting_prefix = "Good afternoon"
+    else: greeting_prefix = "Good evening"
+    greeting_prompt = greeting_prefix + " Kotakee Companion is online. Utilizing hot word model variant %s." % self.trigger_word_iternum
+    self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=greeting_prompt)
     
     # Initialization succeeded. Execute runtime functions. 
     self.hotword_trigger_word.listen_hotword()
