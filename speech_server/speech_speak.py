@@ -68,6 +68,7 @@ class SpeechSpeak:
   emotion_detection_model_num = None
   emotion_detection_location = None
   emotion_representation_location = None
+  emotion_representation_media_location = None
   emotion_detection_class_name = None
   emotion_representation_class_name = None
   emotion_detection_model_variants_location = None
@@ -97,7 +98,8 @@ class SpeechSpeak:
 
   def __init__(self, web_server_status, chime_location, startup_location, shutdown_location, timer_location, alarm_location, wait_location,
                emotion_detection_location, emotion_detection_class_name, emotion_detection_model_variants_location,
-               emotion_representation_location, emotion_representation_class_name, 
+               emotion_representation_location, emotion_representation_class_name,
+               emotion_representation_media_location, 
                multispeaker_synthesis_location, multispeaker_synthesis_class_name,
                multispeaker_synthesis_inference_location, multispeaker_synthesis_inference_class_name,
                multispeaker_synthesis_models_location, multispeaker_synthesis_speakers_location,
@@ -127,6 +129,7 @@ class SpeechSpeak:
     self.emotion_representation_location = emotion_representation_location
     self.emotion_representation_class_name = emotion_representation_class_name
     self.emotion_detection_model_variants_location = emotion_detection_model_variants_location
+    self.emotion_representation_media_location = emotion_representation_media_location
 
     self.multispeaker_synthesis_location = multispeaker_synthesis_location
     self.multispeaker_synthesis_class_name = multispeaker_synthesis_class_name
@@ -152,7 +155,8 @@ class SpeechSpeak:
         self.emotion_detection = self.emotion_detection_class(model_num=self.emotion_detection_model_num, 
                                                               model_variants_location=emotion_detection_model_variants_location)
         self.emotion_representation = self.emotion_representation_class(use_python3=self.use_python3, 
-                                                                        use_emotion_representation_reduced = self.use_emotion_representation_reduced)
+                                                                        use_emotion_representation_reduced = self.use_emotion_representation_reduced,
+                                                                        emotion_videos_location = emotion_representation_media_location)
         # Successful initialization.
         self.emotion_detection_representation_enabled = True
       else:

@@ -43,12 +43,12 @@ class SpeechServer:
   # Configurable constants passed down to components. 
   trigger_word_models_path = '../trigger_word_detection/models'
 
-  speech_speak_chime_location = "./assets/hotword.wav"
-  speech_speak_startup_location = "./assets/startup.wav"
-  speech_speak_shutdown_location = "./assets/shutdown.wav"
-  speech_speak_timer_location = "./assets/timer.wav"
-  speech_speak_alarm_location = "./assets/timer.wav"
-  speech_speak_wait_location = "./assets/waiting.wav"
+  speech_speak_chime_location = "../assets_audio/hotword.wav"
+  speech_speak_startup_location = "../assets_audio/startup.wav"
+  speech_speak_shutdown_location = "../assets_audio/shutdown.wav"
+  speech_speak_timer_location = "../assets_audio/timer.wav"
+  speech_speak_alarm_location = "../assets_audio/timer.wav"
+  speech_speak_wait_location = "../assets_audio/waiting.wav"
   speech_speak_use_python3 = None
 
   # Which model to use for emotion detection + emotion representation
@@ -59,6 +59,7 @@ class SpeechServer:
   speech_speak_emotion_detection_class_name = "EmotionDetectionUtility"
   speech_speak_emotion_detection_model_variants_location = "../../emotion_detection/models"
   speech_speak_emotion_representation_location = "./emotion_representation/emotion_representation"
+  speech_speak_emotion_representation_media_location = "../assets_video/emotion_media"
   speech_speak_emotion_representation_class_name = "EmotionRepresentation" 
   speech_speak_use_emotion_representation = None
   speech_speak_use_emotion_representation_reduced = None
@@ -70,7 +71,7 @@ class SpeechServer:
   speech_speak_multispeaker_synthesis_inference_location = "../../multispeaker_synthesis/production_inference"
   speech_speak_multispeaker_synthesis_inference_class_name = "MultispeakerSynthesis"
   speech_speak_multispeaker_synthesis_models_location = "../../multispeaker_synthesis/production_models"
-  speech_speak_multispeaker_synthesis_speakers_location = "../multispeaker_synthesis_speakers"
+  speech_speak_multispeaker_synthesis_speakers_location = "../assets_audio/multispeaker_synthesis_speakers"
   speech_speak_multispeaker_synthesis_model_num = "model1"
   speech_speak_multispeaker_synthesis_speaker = "eleanor"
   speech_speak_use_multispeaker_synthesis = None
@@ -191,6 +192,7 @@ class SpeechServer:
       emotion_detection_model_variants_location= self.speech_speak_emotion_detection_model_variants_location,
       emotion_representation_location=self.speech_speak_emotion_representation_location,
       emotion_representation_class_name = self.speech_speak_emotion_representation_class_name,
+      emotion_representation_media_location = self.speech_speak_emotion_representation_media_location,
 
       multispeaker_synthesis_location = self.speech_speak_multispeaker_synthesis_location,
       multispeaker_synthesis_class_name = self.speech_speak_multispeaker_synthesis_class_name,
