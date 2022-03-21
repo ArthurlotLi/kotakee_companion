@@ -253,6 +253,13 @@ class SimpleUtilities:
       self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=dateString)
       valid_command = True
 
+    elif("repeat" in command):
+      # Repeat whatever the user says after the word repeat. 
+      command = " " + command
+      repeat_string = command.split("repeat")[1]
+      self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=repeat_string)
+      valid_command = True
+
     elif("calculator" in command or "calculate" in command):
       # Get the first number and then the second number in the query. Ignore
       # all others if there are any. Fail if there are not enough numbers.
