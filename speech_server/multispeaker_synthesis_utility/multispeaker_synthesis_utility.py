@@ -101,7 +101,8 @@ class MultispeakerSynthesisUtility:
     texts = self._preprocess_texts(texts)
 
     # Get the filepath to the wav or embedding for this utterance.
-    utterance_location = self.speakers_location + "/" + speaker_id + "/" + utterance_id
+    #utterance_location = self.speakers_location + "/" + speaker_id + "/" + utterance_id
+    utterance_location = self.speakers_location + "/" + speaker_id
     
     embeds_fpath = Path(utterance_location + ".npy")
     if embeds_fpath.exists():
@@ -226,8 +227,9 @@ if __name__ == "__main__":
   inference_class_name = "MultispeakerSynthesis"
   model_num = "model1"
 
-  texts = ["Hello world from Kotakee Companion! How are you doing today? I'm feeling good."]
-  speaker_id = "eleanor"
+  texts = ["Hello world from Kotakee Companion! How are you doing today? I'm feeling good. Fucking piece of bitch ass fuck nugget ass"]
+  speaker_id = "BIENFU"
+  #speaker_id = "ELEANOR_OLD"
   utterance_id = "neutral"
 
   utility = MultispeakerSynthesisUtility(model_num=model_num, 
@@ -236,4 +238,6 @@ if __name__ == "__main__":
                                          inference_location=inference_location,
                                          inference_class_name=inference_class_name)
   
-  utility.speaker_synthesize_speech(texts=texts, speaker_id=speaker_id, utterance_id=utterance_id)
+  wavs = utility.speaker_synthesize_speech(texts=texts, speaker_id=speaker_id, utterance_id=utterance_id)
+
+  utility.play_wav(wavs)
