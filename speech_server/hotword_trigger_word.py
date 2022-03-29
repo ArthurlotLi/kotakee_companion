@@ -183,6 +183,7 @@ class HotwordTriggerWord:
   def get_audio_input_stream(self, callback):
     # Try mulitple times - this depends on the hardware. 
     max_channels_tested = 5
+    stream = None
     for i in range(0, max_channels_tested):
       if stream is None:
         try:
