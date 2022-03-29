@@ -184,12 +184,12 @@ class HotwordTriggerWord:
     # Try mulitple times - this depends on the hardware. 
     max_channels_tested = 5
     stream = None
-    for i in range(0, max_channels_tested):
+    for i in range(1, max_channels_tested):
       if stream is None:
         try:
           stream = pyaudio.PyAudio().open(
             format=pyaudio.paInt16,
-            channels=1,
+            channels=i,
             rate=self.fs,
             input=True,
             frames_per_buffer=self.chunk_samples,
@@ -197,5 +197,7 @@ class HotwordTriggerWord:
             stream_callback=callback)
         except:
           stream = None
+
+    assert stream is not None
 
     return stream
