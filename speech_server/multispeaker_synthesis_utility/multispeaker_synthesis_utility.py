@@ -33,7 +33,7 @@ class MultispeakerSynthesisUtility:
   _inference_class = None
   _inference = None
 
-  _split_sentence_re = r'[\.|!|,|\?|:|;|-] '
+  _split_sentence_re = r'[\.|!|,|\?|:|;|-|\n] '
 
   # Upon initialization, attempt to load the model specified.
   # Allow user to provide model location and override the default.
@@ -227,8 +227,8 @@ if __name__ == "__main__":
   inference_class_name = "MultispeakerSynthesis"
   model_num = "model1"
 
-  texts = ["Hello world from Kotakee Companion! How are you doing today? I'm feeling good. Fucking piece of bitch ass fuck nugget ass"]
-  speaker_id = "BIENFU"
+  texts = ["Hello world from Kotakee Companion! How are you doing today\nI'm feeling good."]
+  speaker_id = "ELEANOR"
   #speaker_id = "ELEANOR_OLD"
   utterance_id = "neutral"
 

@@ -181,12 +181,20 @@ class HotwordTriggerWord:
 
   # Initial stream definition. Expects the callback function. 
   def get_audio_input_stream(self, callback):
-    stream = pyaudio.PyAudio().open(
-        format=pyaudio.paInt16,
-        channels=1,
-        rate=self.fs,
-        input=True,
-        frames_per_buffer=self.chunk_samples,
-        input_device_index=0,
-        stream_callback=callback)
+    # Try mulitple times - this depends on the hardware. 
+    max_channels_tested = 5
+    for i in range(0, max_channels_tested):
+      if stream is None:
+        try:
+          stream = pyaudio.PyAudio().open(
+            format=pyaudio.paInt16,
+            channels=1,
+            rate=self.fs,
+            input=True,
+            frames_per_buffer=self.chunk_samples,
+            input_device_index=0,
+            stream_callback=callback)
+        except:
+          stream = None
+
     return stream
