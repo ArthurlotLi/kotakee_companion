@@ -15,6 +15,8 @@
 # Because waking up requires drastic measures, like blasting your
 # irises with all your house lights. 
 
+import time
+
 class AlarmUtility:
   # Management dict checked via passive_module by the interaction
   # passive thread. If this dict holds an action, the parent of
@@ -22,17 +24,6 @@ class AlarmUtility:
   module_management = {}
 
   snooze_confirmation_words = ["sure", "yep", "go ahead", "okay", "yeah", "affirm", "that's it", "ok", "yes", "go for it", "snooze", "please", "more minutes"]
-
-  speech_speak = None
-  speech_listen = None
-  web_server_status = None
-
-  additional_data = None
-  alarm_name = None
-  alarm_hour = None # Time in 24_00 format
-  alarm_minute = None
-  snooze_remaining = None
-  snooze_duration_seconds = None
 
   # Expects a dictionary structured as such:
   # roomid_actionid : onstate_offstate
@@ -59,6 +50,7 @@ class AlarmUtility:
     self.snooze_remaining = additional_data["snooze_remaining"]
     self.snooze_duration_seconds = additional_data["snooze_duration_seconds"]
     self.action_dict = additional_data["action_dict"]
+    self.repeating_alarm = additional_data["repeating_alarm"]
 
   # Standard routine triggered when the event time is triggered
   # by the passive interaction thread. Execute an alarm once. 
@@ -136,5 +128,32 @@ class AlarmUtility:
         "duration_seconds" : self.snooze_duration_seconds
       }
     else:
-      self.module_management["clear_module"] = True
+      # Handle a recurring alarm. 
+      if self.repeating_alarm:
+        duration_seconds = 0
+        current_seconds = time.strftime("%S", time.localtime())
+        current_minutes = time.strftime("%M", time.localtime())
+        current_hours = time.strftime("%H", time.localtime())
+        current_time_since_midnight = int(current_seconds) + int(current_minutes) * 60 + int(current_hours) * 3600
+
+        # Check if our time is going to put us before or after now. 
+        alarm_time_since_midnight = self.alarm_minute*60 + self.alarm_hour*3600
+        print("[DEBUG] Current time is " + str(current_time_since_midnight) + ". Alarm time is " + str(alarm_time_since_midnight) + ".")
+
+        if alarm_time_since_midnight < current_time_since_midnight:
+          # Alarm will be for tomorrow.
+          remainder_time_today = 86400 - current_time_since_midnight 
+          duration_seconds = remainder_time_today + alarm_time_since_midnight
+        else:
+          duration_seconds = alarm_time_since_midnight - current_time_since_midnight
+
+        current_time = time.time()
+        first_event_time = current_time + (float(duration_seconds)) # Append seconds. 
+        print("[DEBUG] Setting recurring alarm for " + str(duration_seconds) + " seconds. Current time: " + str(current_time) + ". Targeted time: " + str(first_event_time) + ".")
+
+        self.module_management["add_module_passive"] = {
+          "duration_seconds" : duration_seconds
+        }
+      else:
+        self.module_management["clear_module"] = True
         
