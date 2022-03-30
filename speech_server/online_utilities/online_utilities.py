@@ -105,6 +105,7 @@ class OnlineUtilities:
     try:
       api_result = requests.get(self.news_api_url, params = query_params)
       api_result_json = api_result.json()
+      print(api_result_json)
       articles = api_result_json["articles"]
 
       if len(articles) == 0:
