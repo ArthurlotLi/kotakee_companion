@@ -8,8 +8,6 @@
 import time
 from datetime import date
 
-from numpy import True_
-
 class SimpleUtilities:
   # Paths relative to where interaction_active is. 
   timer_class_location = "./simple_utilities/timer_utility/timer_utility.TimerUtility"
@@ -42,10 +40,10 @@ class SimpleUtilities:
     self.web_server_status = web_server_status
     self.interaction_passive = interaction_passive
 
-  # Level 1 standard routine.
   def parse_command(self, command):
-    valid_command = True
-
+    """
+    Level 1 standard routine. Return True if the command applies.
+    """
     if("list timers" in command or "list all timers" in command 
        or "all timers" in command or "delete timers" in command 
        or "clear timers" in command or "clear all timers" in command 
