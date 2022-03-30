@@ -9,7 +9,7 @@ class OnlineUtilities:
   news_api_key = "a7287b5b00a641e7b532a75007226944" # TODO: Leave this here for now. 
   news_api_url = " https://newsapi.org/v2/top-headlines"
   news_api_possible_categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
-  news_api_results = 20 # Default is 20, 100 is maximum.
+  news_api_results = 15 # Default is 20, 100 is maximum.
 
   def __init__(self, speech_speak):
     self.speech_speak = speech_speak
@@ -91,6 +91,7 @@ class OnlineUtilities:
       for category in self.news_api_possible_categories:
         if category in command:
           query_params["category"] = category
+          query_params["country"] = "us"
           print("[DEBUG] Online Utilities - Executing news API call with category of %s." % category)
           response_to_query = "Here are the articles I found for %s." % category
           break
@@ -100,13 +101,13 @@ class OnlineUtilities:
     else:
       print("[DEBUG] Online Utilites - Executing news API call for unfiltered top headlines.")
       query_params["category"] = "general"
+      query_params["country"] = "us"
       response_to_query = "Here are today's headlines."
     
     # We have our formulated query. Execute it. 
     try:
       api_result = requests.get(self.news_api_url, params = query_params)
       api_result_json = api_result.json()
-      print(api_result_json)
       articles = api_result_json["articles"]
 
       if len(articles) == 0:
