@@ -9,7 +9,8 @@ class OnlineUtilities:
   news_api_key = "a7287b5b00a641e7b532a75007226944" # TODO: Leave this here for now. 
   news_api_url = " https://newsapi.org/v2/top-headlines"
   news_api_possible_categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
-  news_api_results = 15 # Default is 20, 100 is maximum.
+  news_api_country = "us" # To ensure we get english results. 
+  news_api_results = 20 # Default is 20, 100 is maximum.
 
   def __init__(self, speech_speak):
     self.speech_speak = speech_speak
@@ -91,7 +92,7 @@ class OnlineUtilities:
       for category in self.news_api_possible_categories:
         if category in command:
           query_params["category"] = category
-          query_params["country"] = "us"
+          query_params["country"] = self.news_api_country
           print("[DEBUG] Online Utilities - Executing news API call with category of %s." % category)
           response_to_query = "Here are the articles I found for %s." % category
           break
@@ -101,7 +102,7 @@ class OnlineUtilities:
     else:
       print("[DEBUG] Online Utilites - Executing news API call for unfiltered top headlines.")
       query_params["category"] = "general"
-      query_params["country"] = "us"
+      query_params["country"] = self.news_api_country
       response_to_query = "Here are today's headlines."
     
     # We have our formulated query. Execute it. 
@@ -114,9 +115,14 @@ class OnlineUtilities:
         response_to_query = "I'm sorry, I was unable to find any articles for you."
       else:
         for article in articles:
-          split_article_title = article["title"].rsplit(" - ", 1)
-          headline, article_source = split_article_title[0], split_article_title[1]
-          response_to_query += " " + article_source + ", " + headline
+          # Get rid of a common convention to add " - " to the end
+          # followed by the source. 
+          if " - " in article["title"]:
+            split_article_title = article["title"].rsplit(" - ", 1)
+            headline, article_source = split_article_title[0], split_article_title[1]
+            response_to_query += " From " + article_source + ". "  + headline
+          else:
+            response_to_query += " " + headline
       
       self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=response_to_query) 
 
