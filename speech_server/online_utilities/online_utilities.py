@@ -99,6 +99,7 @@ class OnlineUtilities:
     # Otherwise, just query for headlines.
     else:
       print("[DEBUG] Online Utilites - Executing news API call for unfiltered top headlines.")
+      query_params["category"] = "general"
       response_to_query = "Here are today's headlines."
     
     # We have our formulated query. Execute it. 
