@@ -122,7 +122,7 @@ class OnlineUtilities:
             headline, article_source = split_article_title[0], split_article_title[1]
             response_to_query += " From " + article_source + ". "  + headline
           else:
-            response_to_query += " " + headline
+            response_to_query += " " + article["title"]
       
       self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=response_to_query) 
 
