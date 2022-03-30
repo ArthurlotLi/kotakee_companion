@@ -185,7 +185,7 @@ class SimpleUtilities:
     # any afterwards. 
     for i in range(len(self.alarm_ids)-1,-1,-1):
       # Check if it exists. If not, delete it. 
-      alarm_module = self.interaction_passive.get_module_by_id(self.alarm_ids[i])
+      alarm_module, _ = self.interaction_passive.get_module_by_id(self.alarm_ids[i])
       if alarm_module is None:
         del self.alarm_ids[i]
       else:
