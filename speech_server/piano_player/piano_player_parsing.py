@@ -43,7 +43,7 @@ class PianoPlayerParsing:
       for file in piano_songs_contents:
         if file.endswith(".mid") or file.endswith("midi"):
           piano_song_filenames.append(file)
-          piano_song_names.append(file.replace(".mid","").replace(".midi",""))
+          piano_song_names.append(file.replace(".midi","").replace(".mid",""))
 
       if len(piano_song_names) == 0:
         self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="I don't have any piano songs right now.")
