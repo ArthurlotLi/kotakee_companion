@@ -120,7 +120,7 @@ class OnlineUtilities:
           if " - " in article["title"]:
             split_article_title = article["title"].rsplit(" - ", 1)
             headline, article_source = split_article_title[0], split_article_title[1]
-            response_to_query += " From " + article_source + ". "  + headline
+            response_to_query += ", From " + article_source + ". "  + headline
           else:
             response_to_query += " " + article["title"]
       
