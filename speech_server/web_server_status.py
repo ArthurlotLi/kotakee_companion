@@ -75,7 +75,7 @@ class WebServerStatus:
   def test_wide_internet(self):
     connection_status = False
     try:
-      requests.head('http://www.google.com/', timeout=1)
+      requests.head('http://www.google.com/', timeout=3)
       connection_status = True
     except:
       pass
