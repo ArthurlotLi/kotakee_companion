@@ -231,7 +231,7 @@ class SpeechSpeak:
           read_full_output = True
           return True
     return False
-
+    
   def shutdown_process(self):
     print("[DEBUG] Speak Text shutting down existing process.")
     # Socket interaction using multiprocessing library. 
@@ -276,6 +276,15 @@ class SpeechSpeak:
     self.shutdown_process()
     if self.emotion_representation is not None:
       self.emotion_representation.shutdown_process()
+
+  def list_all_speakers(self):
+    """
+    For multispeaker synthesis, make the speaker list available here.
+    """
+    if self.multispeaker_synthesis_enabled:
+      return self.multispeaker_synthesis.list_all_speakers()
+    else:
+      return []
 
   # The Speak thread. Loops every 'tick' seconds and checks if any 
   # events needs to occur. 
@@ -328,6 +337,8 @@ class SpeechSpeak:
         self.synthesize_text(event_content)
       else:
         self.speak_text(event_content)
+    elif event_type == "change_speaker":
+      self.change_multispeaker_synthesis_speaker(event_content)
     elif event_type == "emote":
       self.emote(event_content)
     elif event_type == "emote_stop":
@@ -349,13 +360,36 @@ class SpeechSpeak:
     else:
       print("[ERROR] Speak thrd recieved an unknown event type '" + str(event_type)+ "'!")
 
+  def change_multispeaker_synthesis_speaker(self, new_speaker):
+    """
+    Allows for the user to select a new speaker. 
+    """
+    if self.multispeaker_synthesis_enabled:
+      new_speaker = new_speaker.upper()
+
+      # Allow random speakers functionality to be enabled here. 
+      if new_speaker == "RANDOM SINGLE" or new_speaker == "SINGLE RANDOM":
+        new_speaker = self.multispeaker_synthesis.random_speaker()
+        speaker_exists = True
+      elif new_speaker == "RANDOM":
+        speaker_exists = True
+      else:
+        new_speaker = self.multispeaker_synthesis.replace_common_misdetections(new_speaker)
+        speaker_exists = self.multispeaker_synthesis.check_speaker_exists(new_speaker)
+        
+      if speaker_exists:
+        self.multispeaker_synthesis_speaker = new_speaker
+        self.synthesize_text("Okay companion speaker has been changed to %s." % new_speaker)
+      else:
+        self.synthesize_text("I'm sorry, I wasn't able to find a speaker called %s." % new_speaker)
+
   # Converts text to speech using multispeaker synthesis project.
   # Emotion Detection may be used in this routine for two reasons -
   # Emotion Representation or to inject an emotion prior into the 
   # speaker synthesis process. 
   def synthesize_text(self, output_text):
     if(output_text is not None and output_text != ""):
-      print("[DEBUG] Speech Speak - Synthesizing output text: \"%s\"." % output_text)
+      print("[DEBUG] Speech Speak - Synthesizing output text: \"%s\"." % (output_text))
 
       # Ping a noise to indicate that we're processing the output
       # text. 

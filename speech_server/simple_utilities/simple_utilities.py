@@ -69,6 +69,14 @@ class SimpleUtilities:
       self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=repeat_string)
     elif("calculator" in command or "calculate" in command):
       self.calculator(command)
+    elif("change speaker to" in command and self.speech_speak.multispeaker_synthesis_enabled is True):
+      new_speaker = command.split("change speaker to")[1].strip()
+      self.speech_speak.blocking_speak_event(event_type="change_speaker", event_content=new_speaker)
+    elif("list speaker" in command or "list all speaker" in command) and self.speech_speak.multispeaker_synthesis_enabled is True:
+      output_text = "Here are all implemented speakers"
+      for speaker in self.speech_speak.list_all_speakers():
+        output_text += ". " + speaker
+      self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=output_text)
     else:
       # No valid command was parsed.
       return False

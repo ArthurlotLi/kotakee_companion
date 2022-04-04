@@ -45,6 +45,11 @@ class HotwordTriggerWord:
     self.speech_speak = speech_speak
     self.speech_listen = speech_listen
 
+    # For tensorflow - stop allocating the entire VRAM. 
+    config = tf.compat.v1.ConfigProto()
+    config.gpu_options.allow_growth=True
+    sess = tf.compat.v1.Session(config=config)
+
   # Must be called. Returns False if failure occurs, otherwise returns True.
   def load_model(self, iternum):
     print("[INFO] Loading Trigger Word Detection model iteration " + str(iternum) + ".")

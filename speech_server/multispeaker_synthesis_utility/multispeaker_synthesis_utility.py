@@ -20,6 +20,7 @@ import sys
 import wave
 import pyaudio  
 import re
+import random
 
 class MultispeakerSynthesisUtility:
   # Given model variants location, how do we get to synthesizer models? 
@@ -100,6 +101,10 @@ class MultispeakerSynthesisUtility:
     # Preprocess the texts (on this end)
     texts = self._preprocess_texts(texts)
 
+    if speaker_id.lower() == "random":
+      speaker_id = self.random_speaker()
+      print("[DEBUG] MultispeakerSynthesisUtility - RANDOM speaker: %s" % speaker_id)
+
     # Get the filepath to the wav or embedding for this utterance.
     #utterance_location = self.speakers_location + "/" + speaker_id + "/" + utterance_id
     utterance_location = self.speakers_location + "/" + speaker_id
@@ -152,6 +157,67 @@ class MultispeakerSynthesisUtility:
     # Delete the last temporary wav file. 
     if os.path.exists(self._temp_wav_name):
       os.remove(self._temp_wav_name)
+
+  def check_speaker_exists(self, new_speaker):
+    """
+    Allows for the user to select a new speaker. Returns True if the
+    speaker was found, False otherwise. 
+
+    We don't actually change anything - we just check that it exists. 
+    """
+    return os.path.exists(self.speakers_location + "/" + new_speaker + ".npy")
+
+  def list_all_speakers(self):
+    speaker_names = []
+    for item in os.listdir(self.speakers_location):
+      if item.endswith(".npy"):
+        speaker_names.append(item.replace(".npy", ""))
+    return speaker_names
+
+  def random_speaker(self):
+    speaker_list = self.list_all_speakers()
+    i = random.randrange(0, len(speaker_list)-1)
+    speaker_id = speaker_list[i]
+    return speaker_id
+
+  def replace_common_misdetections(self, new_speaker):
+    """
+    Google SR doesn't understand a lot of these names.
+    """
+    if new_speaker == "LILA": new_speaker = "LAILAH"
+    elif new_speaker == "ALICIA": new_speaker = "ALISHA"
+    elif new_speaker == "ARTORIAS": new_speaker = "ARTORIUS"
+    elif new_speaker == "FENWICK": new_speaker = "BENWICK"
+    elif new_speaker == "BIEN PHU": new_speaker = "BIENFU"
+    elif new_speaker == "DAZZLE": new_speaker = "DEZEL"
+    elif new_speaker == "TERCEL": new_speaker = "DRISELLE"
+    elif new_speaker == "DIAL": new_speaker = "DYLE"
+    elif new_speaker == "AISIN": new_speaker = "EIZEN"
+    elif new_speaker == "ELLIE'S": new_speaker = "ELIZE"
+    elif new_speaker == "CRIM WIRE": new_speaker = "GRIMOIRH"
+    elif new_speaker == "GRIMOIRE": new_speaker = "GRIMOIRH"
+    elif new_speaker == "WANNA": new_speaker = "KAMOANA"
+    elif new_speaker == "CAROL": new_speaker = "KAROL"
+    elif new_speaker == "CORRIGAN": new_speaker = "KUROGANE"
+    elif new_speaker == "MY LOU": new_speaker = "MAGILOU"
+    elif new_speaker == "MAGGIE LOU": new_speaker = "MAGILOU"
+    elif new_speaker == "CORRIGAN": new_speaker = "KUROGANE"
+    elif new_speaker == "MEDUSA": new_speaker = "MEDISSA"
+    elif new_speaker == "MODESTA": new_speaker = "MEDISSA"
+    elif new_speaker == "MAKE LEO": new_speaker = "MIKLEO"
+    elif new_speaker == "MILA": new_speaker = "MILLA"
+    elif new_speaker == "MUSIC": new_speaker = "MUZET"
+    elif new_speaker == "ROKU": new_speaker = "ROKUROU"
+    elif new_speaker == "ROWING": new_speaker = "ROWEN"
+    elif new_speaker == "SARAH'S": new_speaker = "SERES"
+    elif new_speaker == "SERIES": new_speaker = "SERES"
+    elif new_speaker == "SARAY": new_speaker = "SOREY"
+    elif new_speaker == "SURAE": new_speaker = "SOREY"
+    elif new_speaker == "TIVO": new_speaker = "TEEPO"
+    elif new_speaker == "URI": new_speaker = "YURI"
+    elif new_speaker == "THE FEET": new_speaker = "ZAVEID" # lol...
+    elif new_speaker == "DAVID": new_speaker = "ZAVEID"
+    return new_speaker
 
   # Given a list of strings to turn into wavs as wella st he path to
   # the wav file for the speaker utterance, reutrn a list of synthesized
