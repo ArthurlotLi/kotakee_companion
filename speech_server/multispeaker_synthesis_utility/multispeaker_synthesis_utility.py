@@ -213,6 +213,7 @@ class MultispeakerSynthesisUtility:
     elif new_speaker == "SERIES": new_speaker = "SERES"
     elif new_speaker == "SARAY": new_speaker = "SOREY"
     elif new_speaker == "SURAE": new_speaker = "SOREY"
+    elif new_speaker == "SIRI": new_speaker = "SOREY"
     elif new_speaker == "TIVO": new_speaker = "TEEPO"
     elif new_speaker == "URI": new_speaker = "YURI"
     elif new_speaker == "THE FEET": new_speaker = "ZAVEID" # lol...
