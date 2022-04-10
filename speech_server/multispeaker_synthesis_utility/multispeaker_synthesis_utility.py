@@ -301,32 +301,36 @@ class MultispeakerSynthesisUtility:
     """
     assert self.web_server_status is not None
     if self.web_server_status.cloud_inference_status is True:
-      # We are connected. Attempt to submit text to the cloud
-      # inference server. 
-      request_text = " ".join(texts)
-      data_to_send = {
-        "speaker_id" : speaker_id,
-        "text" : request_text
-      }
-      query = self.web_server_status.cloud_inference_address + self._cloud_inference_api
-      response = self.web_server_status.execute_post_query(
-        query, 
-        data_to_send = data_to_send,
-        timeout= None,
-        verbose=False)
+      try:
+        # We are connected. Attempt to submit text to the cloud
+        # inference server. 
+        request_text = " ".join(texts)
+        data_to_send = {
+          "speaker_id" : speaker_id,
+          "text" : request_text
+        }
+        query = self.web_server_status.cloud_inference_address + self._cloud_inference_api
+        response = self.web_server_status.execute_post_query(
+          query, 
+          data_to_send = data_to_send,
+          timeout= None,
+          verbose=False)
 
-      if response is not None:
-        # If successful, we need to decode the wav files that are
-        # in base64. 
-        wavs = []
-        response_dict = json.loads(response.text)
-        for item in response_dict:
-          base64_string = response_dict[item]
-          decoded_bytes = base64.decodebytes(bytes(base64_string, encoding="utf-8"))
-          wav = np.frombuffer(decoded_bytes, dtype=np.float64)
-          # We need to copy these because they're read-only. 
-          wavs.append(np.copy(wav))
-        return wavs
+        if response is not None:
+          # If successful, we need to decode the wav files that are
+          # in base64. 
+          wavs = []
+          response_dict = json.loads(response.text)
+          for item in response_dict:
+            base64_string = response_dict[item]
+            decoded_bytes = base64.decodebytes(bytes(base64_string, encoding="utf-8"))
+            wav = np.frombuffer(decoded_bytes, dtype=np.float64)
+            # We need to copy these because they're read-only. 
+            wavs.append(np.copy(wav))
+          return wavs
+      except Exception as e:
+        print("[WARNING] MultispeakerSynthesisUtility - Error when executing Cloud Inference:")
+        print(e)
 
     return None
 
