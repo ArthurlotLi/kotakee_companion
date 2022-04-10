@@ -24,6 +24,8 @@ import random
 import json
 import base64
 import numpy as np
+from multiprocessing import Pool
+from tqdm import tqdm
 
 class MultispeakerSynthesisUtility:
   # Given model variants location, how do we get to synthesizer models? 
@@ -39,7 +41,10 @@ class MultispeakerSynthesisUtility:
 
   _split_sentence_re = r'[\.|!|,|\?|:|;|-|\n] '
 
+  # Note... Multiprocessing really makes no sense here. A good experiment. 
   _cloud_inference_api = "/synthesizeText"
+  _cloud_inference_decoding_processes = 4
+  _cloud_inference_decoding_multiprocessing = False
 
   # Upon initialization, attempt to load the model specified.
   # Allow user to provide model location and override the default.
@@ -302,6 +307,7 @@ class MultispeakerSynthesisUtility:
     assert self.web_server_status is not None
     if self.web_server_status.cloud_inference_status is True:
       try:
+        synthesis_start = time.time()
         # We are connected. Attempt to submit text to the cloud
         # inference server. 
         request_text = " ".join(texts)
@@ -310,29 +316,49 @@ class MultispeakerSynthesisUtility:
           "text" : request_text
         }
         query = self.web_server_status.cloud_inference_address + self._cloud_inference_api
+        query_start = time.time()
         response = self.web_server_status.execute_post_query(
           query, 
           data_to_send = data_to_send,
           timeout= None,
           verbose=False)
+        print("[DEBUG] MultispeakerSynthesisUtility - Cloud inference query round trip took %.2f seconds." % (time.time() - query_start))
 
         if response is not None:
           # If successful, we need to decode the wav files that are
           # in base64. 
           wavs = []
           response_dict = json.loads(response.text)
+
+          decoding_start = time.time()
+          base64_strings = []
           for item in response_dict:
-            base64_string = response_dict[item]
-            decoded_bytes = base64.decodebytes(bytes(base64_string, encoding="utf-8"))
-            wav = np.frombuffer(decoded_bytes, dtype=np.float64)
-            # We need to copy these because they're read-only. 
-            wavs.append(np.copy(wav))
-          return wavs
+            if self._cloud_inference_decoding_multiprocessing is False:
+              wavs.append(self.decode_wav(response_dict[item]))
+            else:
+              base64_strings.append((response_dict[item]))
+          
+          if self._cloud_inference_decoding_multiprocessing is True:
+            job = Pool(self._cloud_inference_decoding_processes).imap(self.decode_wav, base64_strings)
+            wavs = list(tqdm(job, "[DEBUG] MultispeakerSynthesisUtility - Decoding wavs", len(base64_strings), unit="wavs"))    
+          copied_wavs = []
+          for wav in wavs: copied_wavs.append(np.copy(wav))   
+          print("[DEBUG] MultispeakerSynthesisUtility - Cloud inference decoding procedure took %.2f seconds." % (time.time() - decoding_start))
+          print("[DEBUG] MultispeakerSynthesisUtility - Total cloud inference time: %.2f seconds." % (time.time() - synthesis_start))
+          return copied_wavs
+          
       except Exception as e:
         print("[WARNING] MultispeakerSynthesisUtility - Error when executing Cloud Inference:")
         print(e)
 
     return None
+  
+  def decode_wav(self, base64_string):
+    """ Given a base64 string, decode it, expecting a wav.  """
+    decoded_bytes = base64.decodebytes(bytes(base64_string, encoding="utf-8"))
+    wav = np.frombuffer(decoded_bytes, dtype=np.float64)
+    # We need to copy these because they're read-only. 
+    return wav
 
 
 # For debug purposes only. 
