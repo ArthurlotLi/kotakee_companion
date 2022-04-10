@@ -82,6 +82,7 @@ class SpeechServer:
   speech_listen_led_room_id = 2
   speech_listen_led_action_id = 51
   web_server_ip_address = "http://192.168.0.197:8080"
+  cloud_inference_server_address = "http://192.168.0.108:8080"
 
   # Required upon initialization. 
   trigger_word_iternum = None
@@ -99,12 +100,14 @@ class SpeechServer:
                speech_speak_use_python3 = True, 
                speech_speak_use_emotion_representation = True, 
                speech_speak_use_emotion_representation_reduced = False, 
-               use_multispeaker_synthesis = True):
+               use_multispeaker_synthesis = True,
+               use_cloud_inference = True):
     self.trigger_word_iternum = trigger_word_iternum
     self.speech_speak_use_python3 = speech_speak_use_python3
     self.speech_speak_use_emotion_representation = speech_speak_use_emotion_representation
     self.speech_speak_use_emotion_representation_reduced = speech_speak_use_emotion_representation_reduced
     self.speech_speak_use_multispeaker_synthesis = use_multispeaker_synthesis
+    self.use_cloud_inference = use_cloud_inference
 
   #
   # Runtime functions
@@ -178,7 +181,10 @@ class SpeechServer:
 
   # Initialize Web Server Status handler. 
   def initialize_web_server_status(self):
-    self.web_server_status = WebServerStatus(ip_address=self.web_server_ip_address)
+    self.web_server_status = WebServerStatus(
+      ip_address=self.web_server_ip_address,
+      cloud_inference_address = self.cloud_inference_server_address,
+      use_cloud_inference = self.use_cloud_inference)
     if self.web_server_status is None: 
       print("[ERROR] Failed to initialize Web Server Status handler.") 
       return False
@@ -289,6 +295,7 @@ if __name__ == "__main__":
   parser.add_argument('-e', action='store_true', default=False)
   parser.add_argument('-er', action='store_true', default=False)
   parser.add_argument('-s', action='store_true', default=False)
+  parser.add_argument('-c', action='store_true', default=False)
   args = parser.parse_args()
 
   trigger_word_iternum = int(args.iternum)
@@ -296,13 +303,15 @@ if __name__ == "__main__":
   use_emotion_representation = args.e == False
   use_emotion_representation_reduced = args.er
   use_multispeaker_synthesis = args.s == False
+  use_cloud_inference = args.c == False
 
   speech_server = SpeechServer(
     trigger_word_iternum=trigger_word_iternum, 
     speech_speak_use_python3=use_python3, 
     speech_speak_use_emotion_representation = use_emotion_representation, 
     speech_speak_use_emotion_representation_reduced = use_emotion_representation_reduced, 
-    use_multispeaker_synthesis = use_multispeaker_synthesis)
+    use_multispeaker_synthesis = use_multispeaker_synthesis,
+    use_cloud_inference = use_cloud_inference)
 
   # If a negative number is passed, execute as a direct query. 
   if (trigger_word_iternum < 0):

@@ -19,21 +19,31 @@ class WebServerStatus:
   home_status_last_update = 0
 
   # Tells other components if we believe we are connected to the 
-  # internet and/or local web server. Latter is consistently
-  # updated with each routine/unique interaction with the web
-  # server. Former is checked on startup (for now, TODO)
+  # internet and/or local web server and/or cloud inference 
+  # server.
   online_status = False
   web_server_status = False
+  cloud_inference_status = False
 
-  def __init__(self, ip_address):
+  def __init__(self, ip_address, cloud_inference_address, use_cloud_inference):
     self.web_server_ip_address = ip_address
+    self.cloud_inference_address = cloud_inference_address
+    self.use_cloud_inference = use_cloud_inference
+    # Request server statuses right on startup. 
+    self.execute_query_server_thread()
 
-  # Non-blocking query to fill status objects as well as to 
-  # check internet connectivity. 
   def execute_query_server_thread(self):
+    """
+    Non-blocking query to fill status objects as well as to 
+    check connectivity with home infrastructure + internet.
+    """
     query_action_states_thread = threading.Thread(target=self.query_action_states, daemon=True).start()
     query_home_status_thread = threading.Thread(target=self.query_home_status, daemon=True).start()
     test_wide_internet_thread = threading.Thread(target=self.test_wide_internet, daemon=True).start()
+    # If we have disabled cloud inference, just never query for it's
+    # status. We'll act like we're not connected. 
+    if self.use_cloud_inference:
+      test_cloud_inference_thread = threading.Thread(target=self.test_cloud_inference_server, daemon=True).start()
 
   # Queries server for states of all modules. 
   def query_action_states(self):
@@ -80,6 +90,16 @@ class WebServerStatus:
     except:
       pass
     self.online_status = connection_status
+    return connection_status
+
+  def test_cloud_inference_server(self):
+    connection_status = False
+    try:
+      requests.head(self.cloud_inference_address, timeout=3)
+      connection_status = True
+    except:
+      pass
+    self.cloud_inference_status = connection_status
     return connection_status
 
   # Returns time of sunset and sunrise, but only if we're connected 
@@ -154,20 +174,22 @@ class WebServerStatus:
       self.web_server_status = False
   
   # Executes a simple POST query and expects the status code to be 200. 
-  def execute_post_query(self, query, data_to_send):
-    print("[DEBUG] Executing POST query: " + query + " with body:")
+  def execute_post_query(self, query, data_to_send, timeout=5, verbose = True):
+    if verbose: print("[DEBUG] Executing POST query: " + query + " with body:")
     print(data_to_send)
     try:
-      response = requests.post(query, data=json.dumps(data_to_send, indent = 4), headers = {'Content-Type': 'application/json'}, timeout=5)
+      response = requests.post(query, data=json.dumps(data_to_send, indent = 4), headers = {'Content-Type': 'application/json'}, timeout=timeout)
       if(response.status_code == 200):
-        print("[DEBUG] Request received successfully.")
+        if verbose: print("[DEBUG] Request received successfully.")
       else:
         print("[WARNING] Server rejected request with status code " + str(response.status_code) + ".")
       self.web_server_status = True
+      return response
     except Exception as e:
       print("[WARNING] execute_post_query unable to connect to server. Exception:")
       print(e)
       self.web_server_status = False
+    return None
 
   # Given the possible command string, roomId, actionId, and 
   # a binary set of states, return a query. 

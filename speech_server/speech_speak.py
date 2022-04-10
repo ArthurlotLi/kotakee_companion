@@ -176,7 +176,8 @@ class SpeechSpeak:
                                                                         model_variants_location = self.multispeaker_synthesis_models_location,
                                                                         speakers_location = self.multispeaker_synthesis_speakers_location,
                                                                         inference_location = multispeaker_synthesis_inference_location,
-                                                                        inference_class_name = multispeaker_synthesis_inference_class_name)
+                                                                        inference_class_name = multispeaker_synthesis_inference_class_name,
+                                                                        web_server_status = web_server_status)
         # Successful initialization.
         self.multispeaker_synthesis_enabled = True
       else:
@@ -290,41 +291,37 @@ class SpeechSpeak:
   # events needs to occur. 
   def speak_thrd(self):
     time_next_idle_update = time.time() + self.emotion_representation_update_idle_duration
-    try:
-      while self.speak_thrd_stop is False:
+    while self.speak_thrd_stop is False:
 
-        # Clear the executed events once done. We don't just clear the
-        # entire array at the end in the edge case that a new event 
-        # comes in during the for loop. (More likely if executing
-        # long strings of text.)
-        indices_to_drop = []
+      # Clear the executed events once done. We don't just clear the
+      # entire array at the end in the edge case that a new event 
+      # comes in during the for loop. (More likely if executing
+      # long strings of text.)
+      indices_to_drop = []
 
-        # Handle everything in the queue. 
-        for i in range(0, len(self.speak_thrd_event_types)):
-          event_type = self.speak_thrd_event_types[i]
-          event_content = self.speak_thrd_event_contents[i]
-          self.handle_speak_event(event_type = event_type, event_content = event_content)
-          indices_to_drop.append(i)
+      # Handle everything in the queue. 
+      for i in range(0, len(self.speak_thrd_event_types)):
+        event_type = self.speak_thrd_event_types[i]
+        event_content = self.speak_thrd_event_contents[i]
+        self.handle_speak_event(event_type = event_type, event_content = event_content)
+        indices_to_drop.append(i)
 
-        # Clear the queue once completed. Go backwards from the back
-        # of the to-delete list.
-        for i in range(len(indices_to_drop)-1, -1, -1):
-          del self.speak_thrd_event_types[indices_to_drop[i]]
-          del self.speak_thrd_event_contents[indices_to_drop[i]]
+      # Clear the queue once completed. Go backwards from the back
+      # of the to-delete list.
+      for i in range(len(indices_to_drop)-1, -1, -1):
+        del self.speak_thrd_event_types[indices_to_drop[i]]
+        del self.speak_thrd_event_contents[indices_to_drop[i]]
 
-        # Handle idle animation update.
-        if self.emotion_detection_representation_enabled:
-          # Only update if it's time AND the emotion
-          current_time = time.time()
-          if current_time >= time_next_idle_update :
-            if self.emotion_representation.subprocess_emotion_state == "idle1":
-              self.emote_stop()
-            time_next_idle_update = current_time + self.emotion_representation_update_idle_duration
-        
-        time.sleep(self.speak_thrd_tick)
-    except Exception as e:
-      print("[ERROR] Speech Thread ran into an exception! Exception text:")
-      print(e)
+      # Handle idle animation update.
+      if self.emotion_detection_representation_enabled:
+        # Only update if it's time AND the emotion
+        current_time = time.time()
+        if current_time >= time_next_idle_update :
+          if self.emotion_representation.subprocess_emotion_state == "idle1":
+            self.emote_stop()
+          time_next_idle_update = current_time + self.emotion_representation_update_idle_duration
+      
+      time.sleep(self.speak_thrd_tick)
       
     # Shutdown has occured. Stop the process.
     print("[DEBUG] Speech Thread closed successfully. ")
@@ -400,10 +397,17 @@ class SpeechSpeak:
       if False is True: # TODO: Enable this if statement if emotion priors are enabled.
         emotion_category = self._emotion_detection_representation(output_text, represent=False)
       
-      wavs = self.multispeaker_synthesis.speaker_synthesize_speech(texts=[output_text], 
-                                                                  speaker_id = self.multispeaker_synthesis_speaker,
-                                                                  utterance_id = emotion_category)
-
+      # First try inference with the cloud inference server. If it
+      # has been disabled or we're not connected, wavs will be
+      # None. 
+      wavs = self.multispeaker_synthesis.cloud_synthesize_speech(texts=[output_text], 
+                                                                 speaker_id = self.multispeaker_synthesis_speaker,
+                                                                 utterance_id = emotion_category)
+      if wavs is None:
+        wavs = self.multispeaker_synthesis.speaker_synthesize_speech(texts=[output_text], 
+                                                                    speaker_id = self.multispeaker_synthesis_speaker,
+                                                                    utterance_id = emotion_category)
+                                                                    
       # Execute representation.
       # TODO: This should probably happen in a different thread.
       if self.emotion_detection_representation_enabled:

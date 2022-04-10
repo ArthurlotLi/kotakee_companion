@@ -21,6 +21,9 @@ import wave
 import pyaudio  
 import re
 import random
+import json
+import base64
+import numpy as np
 
 class MultispeakerSynthesisUtility:
   # Given model variants location, how do we get to synthesizer models? 
@@ -36,13 +39,16 @@ class MultispeakerSynthesisUtility:
 
   _split_sentence_re = r'[\.|!|,|\?|:|;|-|\n] '
 
+  _cloud_inference_api = "/synthesizeText"
+
   # Upon initialization, attempt to load the model specified.
   # Allow user to provide model location and override the default.
   def __init__(self, model_num, model_variants_location, speakers_location, 
-               inference_location, inference_class_name):
+               inference_location, inference_class_name, web_server_status = None):
     print("[DEBUG] MultispeakerSynthesisUtility - Initializing model variant "+str(model_num)+"...")
 
     self.speakers_location = speakers_location
+    self.web_server_status = web_server_status
 
     # Get the first file ending in .pt for the synthesizer. 
     synthesizer_model_fpath = self._get_model_fpath(model_variants_location, 
@@ -285,6 +291,45 @@ class MultispeakerSynthesisUtility:
       return None
 
     return imported_class
+
+  def cloud_synthesize_speech(self, texts: List[str],
+                              speaker_id: str,
+                              utterance_id: str):
+    """
+    Interfaces with the cloud inference server to remotely process
+    multispeaker synthesis text if it's available. 
+    """
+    assert self.web_server_status is not None
+    if self.web_server_status.cloud_inference_status is True:
+      # We are connected. Attempt to submit text to the cloud
+      # inference server. 
+      request_text = " ".join(texts)
+      data_to_send = {
+        "speaker_id" : speaker_id,
+        "text" : request_text
+      }
+      query = self.web_server_status.cloud_inference_address + self._cloud_inference_api
+      response = self.web_server_status.execute_post_query(
+        query, 
+        data_to_send = data_to_send,
+        timeout= None,
+        verbose=False)
+
+      if response is not None:
+        # If successful, we need to decode the wav files that are
+        # in base64. 
+        wavs = []
+        response_dict = json.loads(response.text)
+        for item in response_dict:
+          base64_string = response_dict[item]
+          decoded_bytes = base64.decodebytes(bytes(base64_string, encoding="utf-8"))
+          wav = np.frombuffer(decoded_bytes, dtype=np.float64)
+          # We need to copy these because they're read-only. 
+          wavs.append(np.copy(wav))
+        return wavs
+
+    return None
+
 
 # For debug purposes only. 
 if __name__ == "__main__":
