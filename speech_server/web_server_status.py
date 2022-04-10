@@ -175,8 +175,9 @@ class WebServerStatus:
   
   # Executes a simple POST query and expects the status code to be 200. 
   def execute_post_query(self, query, data_to_send, timeout=5, verbose = True):
-    if verbose: print("[DEBUG] Executing POST query: " + query + " with body:")
-    print(data_to_send)
+    if verbose: 
+      print("[DEBUG] Executing POST query: " + query + " with body:")
+      print(data_to_send)
     try:
       response = requests.post(query, data=json.dumps(data_to_send, indent = 4), headers = {'Content-Type': 'application/json'}, timeout=timeout)
       if(response.status_code == 200):
