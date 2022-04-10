@@ -410,13 +410,12 @@ class SpeechSpeak:
       else:
         print("[DEBUG] Speech Speak - Cloud Inference speech synthesis successful!")
 
-      # Execute representation.
-      # TODO: This should probably happen in a different thread.
+      # Execute representation. Do this in a separate thread. 
       if self.emotion_detection_representation_enabled:
         if False is True:
-          self._emotion_detection_representation(output_text, emotion_category = emotion_category)
+          threading.Thread(target=self._emotion_detection_representation, args=(output_text, emotion_category), daemon=True).start()
         else:
-          self._emotion_detection_representation(output_text)
+          threading.Thread(target=self._emotion_detection_representation, args=(output_text,), daemon=True).start()
     
       self.multispeaker_synthesis.play_wav(wavs)
 
