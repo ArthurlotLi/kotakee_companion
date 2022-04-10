@@ -407,7 +407,9 @@ class SpeechSpeak:
         wavs = self.multispeaker_synthesis.speaker_synthesize_speech(texts=[output_text], 
                                                                     speaker_id = self.multispeaker_synthesis_speaker,
                                                                     utterance_id = emotion_category)
-                                                                    
+      else:
+        print("[DEBUG] Speech Speak - Cloud Inference speech synthesis successful!")
+
       # Execute representation.
       # TODO: This should probably happen in a different thread.
       if self.emotion_detection_representation_enabled:
@@ -419,7 +421,7 @@ class SpeechSpeak:
       self.multispeaker_synthesis.play_wav(wavs)
 
       self.emote_stop()
-      print("[DEBUG] Speak Speak text synthesis complete.")
+      print("[DEBUG] Speak Speak - text synthesis complete.")
 
   # Convert text to speech using pyttsx3 engine. Note calling this by 
   # itself causes a block on the main thread. 
