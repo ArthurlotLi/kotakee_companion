@@ -85,7 +85,7 @@ class WebServerStatus:
   def test_wide_internet(self):
     connection_status = False
     try:
-      requests.head('http://www.google.com/', timeout=3)
+      requests.head('http://www.google.com/', timeout=10)
       connection_status = True
     except:
       pass
@@ -95,7 +95,7 @@ class WebServerStatus:
   def test_cloud_inference_server(self):
     connection_status = False
     try:
-      requests.head(self.cloud_inference_address, timeout=3)
+      requests.head(self.cloud_inference_address, timeout=10)
       connection_status = True
     except:
       pass
