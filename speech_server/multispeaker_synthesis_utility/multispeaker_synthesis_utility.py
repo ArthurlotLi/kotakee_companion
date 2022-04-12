@@ -31,6 +31,7 @@ class MultispeakerSynthesisUtility:
   # Given model variants location, how do we get to synthesizer models? 
   _model_variants_synthesizer_subpath = "synthesizer"
   _model_suffix = ".pt"
+  _vocoder = "griffinlim" # griffinlim or sv2tts. 
 
   # For the sake of simplicity, we simply save the wav file with a temp
   # filename in this location. 
@@ -238,7 +239,7 @@ class MultispeakerSynthesisUtility:
                                   wav_fpath: Path):
     print("[DEBUG] MultispeakerSynthesisUtility - Embedding speaker representation + synthesizing audio for input text:")
     print(texts)
-    wavs = self._inference.synthesize_audio_from_audio(texts, wav_fpath)
+    wavs = self._inference.synthesize_audio_from_audio(texts, wav_fpath, self._vocoder)
     return wavs
 
   # Given a list of strings to turn into wavs as well as the path to
@@ -247,7 +248,7 @@ class MultispeakerSynthesisUtility:
                                    embeds_fpath: Path):
     print("[DEBUG] MultispeakerSynthesisUtility - Synthesizing audio with speaker embedding for input text:")
     print(texts)
-    wavs = self._inference.synthesize_audio_from_embeds(texts, embeds_fpath)
+    wavs = self._inference.synthesize_audio_from_embeds(texts, embeds_fpath, self._vocoder)
     return wavs
 
   # The only preprocessing we do here is to split sentences into
@@ -284,15 +285,17 @@ class MultispeakerSynthesisUtility:
     # Fetch the module first.
     try:
       module = __import__(module_file_name)
-    except:
+    except Exception as e:
       print("[ERROR] Failed to import module " + module_file_name + " from subdirectory '" + module_folder_path + "'.")
+      print(e)
       return None
 
     # Return the class. 
     try:
       imported_class = getattr(module, class_name)
-    except:
+    except Exception as e:
       print("[ERROR] Failed to import class_name " + class_name + ".")
+      print(e)
       return None
 
     return imported_class
