@@ -39,6 +39,8 @@ class MultispeakerSynthesisUtility:
   # filename in this location. 
   _temp_wav_name = "temp_multispeaker_synthesis.wav"
 
+  _target_dBFS = -15.0
+
   _inference_class = None
   _inference = None
 
@@ -152,7 +154,7 @@ class MultispeakerSynthesisUtility:
         # Normalize the audio. Not the best code, but it works in ~0.007 seconds.
         wav_suffix = self._temp_wav_name.rsplit(".", 1)[1]
         sound = AudioSegment.from_file(self._temp_wav_name, wav_suffix)
-        change_in_dBFS = -12.0 - sound.dBFS
+        change_in_dBFS = self._target_dBFS - sound.dBFS
         normalized_sound = sound.apply_gain(change_in_dBFS)
         normalized_sound.export(self._temp_wav_name, format=wav_suffix)
 
