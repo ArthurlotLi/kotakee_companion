@@ -31,7 +31,7 @@ class MultispeakerSynthesisUtility:
   # Given model variants location, how do we get to synthesizer models? 
   _model_variants_synthesizer_subpath = "synthesizer"
   _model_suffix = ".pt"
-  _vocoder = "sv2tts" # griffinlim or sv2tts. 
+  _vocoder = "griffinlim" # griffinlim or sv2tts. 
 
   # For the sake of simplicity, we simply save the wav file with a temp
   # filename in this location. 
