@@ -26,6 +26,8 @@ import base64
 import numpy as np
 from multiprocessing import Pool
 from tqdm import tqdm
+from pydub import AudioSegment
+
 
 class MultispeakerSynthesisUtility:
   # Given model variants location, how do we get to synthesizer models? 
@@ -146,6 +148,13 @@ class MultispeakerSynthesisUtility:
 
       for wav in wavs:
         self._inference.save_wav(wav, self._temp_wav_name)
+
+        # Normalize the audio. Not the best code, but it works in ~0.007 seconds.
+        wav_suffix = self._temp_wav_name.rsplit(".", 1)[1]
+        sound = AudioSegment.from_file(self._temp_wav_name, wav_suffix)
+        change_in_dBFS = -12.0 - sound.dBFS
+        normalized_sound = sound.apply_gain(change_in_dBFS)
+        normalized_sound.export(self._temp_wav_name, format=wav_suffix)
 
         chunk = 1024
         p = pyaudio.PyAudio()
