@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from scipy.io import wavfile
 import os
 from pydub import AudioSegment
+from tqdm import tqdm
 
 # Calculate and plot spectrogram for a wav audio file
 def graph_spectrogram(wav_file):
@@ -33,32 +34,32 @@ def load_raw_audio(raw_data_folder = "./raw_data"):
     activates = []
     backgrounds = []
     negatives = []
-    for filename in os.listdir(raw_data_folder + "/activates"):
+    for filename in tqdm(os.listdir(raw_data_folder + "/activates")):
         if filename.endswith("wav"):
             activate = AudioSegment.from_wav(raw_data_folder + "/activates/"+filename)
             activates.append(activate)
 
             totalFiles = totalFiles + 1
-            print("   Loaded WAV file " + str(totalFiles) + " " + raw_data_folder + "/activates/"+filename)
-    for filename in os.listdir(raw_data_folder + "/backgrounds"):
+            #print("   Loaded WAV file " + str(totalFiles) + " " + raw_data_folder + "/activates/"+filename)
+    for filename in tqdm(os.listdir(raw_data_folder + "/backgrounds")):
         if filename.endswith("wav"):
             background = AudioSegment.from_wav(raw_data_folder + "/backgrounds/"+filename)
             backgrounds.append(background)
 
             totalFiles = totalFiles + 1
-            print("   Loaded WAV file " + str(totalFiles) + " " + raw_data_folder + "/backgrounds/"+filename)
-    for filename in os.listdir(raw_data_folder + "/negatives"):
+            #print("   Loaded WAV file " + str(totalFiles) + " " + raw_data_folder + "/backgrounds/"+filename)
+    for filename in tqdm(os.listdir(raw_data_folder + "/negatives")):
         if filename.endswith("wav"):
             negative = AudioSegment.from_wav(raw_data_folder + "/negatives/"+filename)
             negatives.append(negative)
 
             totalFiles = totalFiles + 1
-            print("   Loaded WAV file " + str(totalFiles) + " " + raw_data_folder + "/negatives/"+filename)
+            #print("   Loaded WAV file " + str(totalFiles) + " " + raw_data_folder + "/negatives/"+filename)
         elif filename.endswith("ogg"):
             # Support oggs downloaded from lingualibre.org.
             negative = AudioSegment.from_ogg(raw_data_folder + "/negatives/"+filename)
             negatives.append(negative)
 
             totalFiles = totalFiles + 1
-            print("   Loaded OGG file " + str(totalFiles) + " " + raw_data_folder + "/negatives/"+filename)
+            #print("   Loaded OGG file " + str(totalFiles) + " " + raw_data_folder + "/negatives/"+filename)
     return activates, negatives, backgrounds

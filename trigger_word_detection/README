@@ -28,3 +28,9 @@ Prerequisites
 ------------------------------------------------------------------------------
 
 1. pip3 install -r requirements.txt 
+
+2. For audio augmentation, you will need pysox, which requires sox:
+
+   a. Get sox: http://sox.sourceforge.net/
+
+   b. Get pysox: pip install sox

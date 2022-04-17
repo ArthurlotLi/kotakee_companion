@@ -24,6 +24,9 @@
 
 /speech_server/piano_player/__pycache__
 
+/trigger_word_detection/raw_data
+/trigger_word_detection/raw_data_dev
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
