@@ -18,20 +18,16 @@
 # that my web server has been ignoring me so much. 
 #
 # Usage:
-# python augmented_train.py ./models/tr_model_13941.h5 1000 1
-
-import tensorflow as tf
-# For tensorflow - stop allocating the entire VRAM. 
-config = tf.compat.v1.ConfigProto()
-config.gpu_options.allow_growth=True
-sess = tf.compat.v1.Session(config=config)
+# python augmented_train.py ./model_checkpoints/tr_model_13941.h5 300 10
 
 from augmented_params import *
 from augmented_dataset import *
 
 from pathlib import Path
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model, save_model
 import argparse
+from tensorflow.keras.callbacks import ModelCheckpoint
+from multiprocessing import Process, Queue
 
 def augmented_train(model_location: Path, loop_epochs: int, 
                     loop_total: int):
@@ -47,9 +43,60 @@ def augmented_train(model_location: Path, loop_epochs: int,
   """ 
   print("[INFO] Augmented Train - Beginning routine for %d loops, with %d epochs per loop. Using model %s." 
     % (loop_total, loop_epochs, model_location))
+
+  ret_dict = {}
+  queue = Queue()
+  queue.put(ret_dict)
+
+  # Loop around and then finish. Each instance needs to be run as
+  # it's own subprocess, because tensorflow doesn't know when to release
+  # memory... We can't load the model outside of the process, so just
+  # pass in the location and get back the location of the updated model.
+  for i in range(0, loop_total):
+    p = Process(target = augmented_train_loop, 
+                args = (queue, i, model_location, loop_total, loop_epochs))
+    # Kick the process off
+    p.start()
+    # Wait for the process to finish. 
+    p.join()
+    # Get the output model. 
+    ret_dict_result = queue.get()
+    model_location = ret_dict_result["model"]
+
+def augmented_train_loop(queue, i, model_location, loop_total, loop_epochs):
+  """
+  Inner function for training. Each go around, create an augmented
+  dataset and fit the model on that dataset for x epochs. Return the
+  model to be fed back to us once more. 
+  """
+  print("\n[INFO] Augmented Train - Starting loop %d out of %d.\n" % (i+1, loop_total))
+  # Leave everything about the model the same.
   model = _load_existing_model(model_location)
+
   X, Y = create_augmented_dataset()
 
+  # Apply MCP. Each checkpoint is named the same as the input file,
+  # with a # indicating which loop iteration it was generated during.
+  # The rest of the filename goes as you'd expect. 
+  mcp = ModelCheckpoint(filepath= checkpoints_folder + '/' + str(Path(model_location).name).replace(".h5", str(i)) + "_{val_accuracy:.5f}_{accuracy:.5f}_{epoch:02d}" + ".h5", 
+                        monitor='accuracy', 
+                        verbose=1, 
+                        save_best_only=False)
+  
+  # Train on the augmented dataset. 
+  history = model.fit(X, Y, shuffle=True, 
+                      epochs=loop_epochs, 
+                      callbacks=[mcp], 
+                      validation_split=validation_split, 
+                      verbose=True, 
+                      batch_size=batch_size)
+  
+  temp_model_location = checkpoints_folder + '/' + str(model_location.name).replace(".h5", str(i)) + "_temp.h5"
+  save_model(model, temp_model_location)
+
+  ret_dict = queue.get()
+  ret_dict["model"] = temp_model_location
+  queue.put(ret_dict)
 
 def _load_existing_model(model_location: Path):
   """

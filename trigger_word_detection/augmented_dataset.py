@@ -14,6 +14,9 @@ import os
 import sox
 import random
 from tqdm import tqdm
+from multiprocessing import Pool
+
+_n_processes = 11
 
 def create_augmented_dataset():
   """
@@ -33,21 +36,35 @@ def create_augmented_dataset():
   print("[INFO] Augmented Dataset - Initiating dataset generation of size " +str(clips_to_generate)+".")
   array_x = []
   array_y = []
-  for i in tqdm(range(clips_to_generate)):
+
+  jobs = []
+  # Select all the wavs here, creating a list of jobs to multiprocess. 
+  for i in tqdm(range(clips_to_generate), desc="[INFO] Augmented Dataset - Selecting wavs"):
     #print("[DEBUG] Augmented Dataset - Generating clip " + str(i) + "...")
     random_indices = np.random.randint(len(backgrounds), size=1)
     random_background = random_indices[0]
-    x, y, files_to_remove = create_training_example(backgrounds[random_background], activates, negatives, "train%d.wav" % i)
-    for file in files_to_remove:
-      os.remove(file)
-    if x.shape == (101, 5511) and y.shape == (1, 1375):
-      array_x.append(np.transpose(x, (1, 0)))
-      array_y.append(np.transpose(y, (1, 0))) # We want to go from (1, 1375) to (1375, 1)
-    else:
-      pass
-      #print("[WARNING] Augmented Dataset - Generated x and y of incorrect shapes! Discarding...")
+    background, random_activates, random_negatives, previous_segments = create_training_example(backgrounds[random_background], activates, negatives)
+    filename = "train%d.wav" % i
+    jobs.append((background, random_activates, random_negatives, previous_segments, filename))
 
+  # Clear up the memory taken by the raw samples.
+  print("[INFO] Augmented Dataset - Clearing loaded wavs in memory.")
+  del activates
+  del negatives
+  del backgrounds
+
+  # Execute multiprocessing. 
+  job = Pool(_n_processes).imap(complete_training_example, jobs)
+  job_results = list(tqdm(job, desc="[INFO] Augmented Dataset - Generating samples", total=len(jobs)))
+
+  for result in job_results:
+    if result[0] is not None and result[1] is not None:
+      array_x.append(result[0])
+      array_y.append(result[1])
+
+  print("[INFO] Augmented Dataset - Combining X matrices into a tensor...")
   final_x = np.array(array_x)
+  print("[INFO] Augmented Dataset - Combining Y matrices into a tensor...")
   final_y = np.array(array_y)
   
   print("[DEBUG] Augmented Dataset - final_x.shape is:", final_x.shape)  
@@ -86,7 +103,6 @@ def augment_wav(wav_location:str):
   output_wav = wav_location.rsplit(".wav", 1)[0] + "_augmented.wav"
   tfm.build_file(wav_location, output_wav)
 
-  input()
   return output_wav
 
 
@@ -146,52 +162,82 @@ def insert_ones(y, segment_end_ms):
           y[0, i] = 1
   return y
 
-def create_training_example(background, activates, negatives, filename):
+def create_training_example(background, activates, negatives):
   # Make background quieter
   background = background - 20
-  y = np.zeros((1, Ty))
   previous_segments = []
   
   # Select 0-4 random "activate" audio clips from the entire list of "activates" recordings
   number_of_activates = np.random.randint(min_positives, max_positives + 1)
-  #print("[DEBUG] Attempting to insert", number_of_activates, "activates.")
   random_indices = np.random.randint(len(activates), size=number_of_activates)
   random_activates = [activates[i] for i in random_indices]
-  
-  for random_activate in random_activates:
-    # Insert the audio clip on the background
-    background, segment_time = insert_audio_clip(background, random_activate, previous_segments)
-    # Handle the case where we simply could not insert another audio clip. 
-    if(segment_time is not None):
-      # Retrieve segment_start and segment_end from segment_time
-      segment_start, segment_end = segment_time
-      # Insert labels in "y"
-      y = insert_ones(y, segment_end_ms=segment_end)
 
   number_of_negatives = np.random.randint(min_negatives, max_negatives + 1)
   random_indices = np.random.randint(len(negatives), size=number_of_negatives)
   random_negatives = [negatives[i] for i in random_indices]
-  #print("[DEBUG] Attempting to insert", number_of_negatives, "negatives.")
 
-  for random_negative in random_negatives:
-    # Insert the audio clip on the background 
-    background, _ = insert_audio_clip(background, random_negative, previous_segments)
+  return background, random_activates, random_negatives, previous_segments
+
+def complete_training_example(args):
+  """
+  The multiprocessing side of things. Given the samples to use, create
+  a complete sample and execute audio augmentation. 
+
+  Returns the X and Y matrices for this sample. 
+  """
+  def _complete_helper(background, random_activates, random_negatives, previous_segments, filename):
+    """
+    Helper, since we want to make sure we can delete the file after.
+    """
+    y = np.zeros((1, Ty))
+
+    for random_activate in random_activates:
+      # Insert the audio clip on the background
+      background, segment_time = insert_audio_clip(background, random_activate, previous_segments)
+      # Handle the case where we simply could not insert another audio clip. 
+      if(segment_time is not None):
+        # Retrieve segment_start and segment_end from segment_time
+        segment_start, segment_end = segment_time
+        # Insert labels in "y"
+        y = insert_ones(y, segment_end_ms=segment_end)
+
+    for random_negative in random_negatives:
+      # Insert the audio clip on the background 
+      background, _ = insert_audio_clip(background, random_negative, previous_segments)
+    
+    # Standardize the volume of the audio clip 
+    background = match_target_amplitude(background, -20.0)
+
+    # Export new training example 
+    file_handle = background.export(filename, format="wav")
+
+    # AUDIO AUGMENTATION - Here's the point where we've generated a wav
+    # file that we can now augment. 
+    output_wav = augment_wav(filename)
+    
+    # Get and plot spectrogram of the new recording (background with superposition of positive and negatives)
+    x = graph_spectrogram(output_wav)
+
+    # Remove the file. Do this outside of this function so we don't get
+    # a win error.
+    files_to_remove = [filename, output_wav]
   
-  # Standardize the volume of the audio clip 
-  background = match_target_amplitude(background, -20.0)
+    return x, y, files_to_remove
 
-  # Export new training example 
-  file_handle = background.export(filename, format="wav")
+  background, random_activates, random_negatives, previous_segments, filename = args[0], args[1], args[2], args[3], args[4]
 
-  # AUDIO AUGMENTATION - Here's the point where we've generated a wav
-  # file that we can now augment. 
-  output_wav = augment_wav(filename)
-  
-  # Get and plot spectrogram of the new recording (background with superposition of positive and negatives)
-  x = graph_spectrogram(output_wav)
+  x, y, files_to_remove = _complete_helper(background, random_activates, random_negatives, previous_segments, filename)
 
-  # Remove the file. Do this outside of this function so we don't get
-  # a win error.
-  files_to_remove = [filename, output_wav]
-  
-  return x, y, files_to_remove
+  # Clear out the files.
+  for file in files_to_remove:
+    os.remove(file)
+    
+  if x.shape == (101, 5511) and y.shape == (1, 1375):
+    x_final = np.transpose(x, (1, 0))
+    y_final = np.transpose(y, (1, 0)) # We want to go from (1, 1375) to (1375, 1)
+  else:
+    x_final = None
+    y_final = None
+    #print("[WARNING] Augmented Dataset - Generated x and y of incorrect shapes! Discarding...")
+
+  return x_final, y_final

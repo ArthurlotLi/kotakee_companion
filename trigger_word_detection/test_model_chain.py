@@ -4,9 +4,6 @@
 # Tests all models currently present in a specified directory
 # given the class defined in test_model. 
 
-from struct import pack_into
-
-from cv2 import drawFrameAxes
 from test_model import TestModel
  
 import os
@@ -16,6 +13,7 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 import pandas as pd
+import tensorflow as tf
 
 class TestModelChain:
   X_dev_location = "./XY_dev_kotakee/X_dev_kotakee.npy"
@@ -54,10 +52,6 @@ class TestModelChain:
     minibatch = []
     
     files = os.listdir(self.test_model_location)
-
-    # If using GPU, the minbatch will automatically be set to 1. 
-    if self.use_gpu:
-      self.minibatch_size = 1
 
     for j in range(0, len(files)):
       filename = files[j]
@@ -146,6 +140,14 @@ class TestModelChain:
   # right after. If the GPU is disabled, this still allows the 
   # memory to be handled properly. 
   def test_model_worker(self, queue, model_path, X_dev = None, Y_dev = None, acc_dict_name = "acc"):
+
+    # Allow tensorflow growth during testing, so as to allow for 
+    # multiprocessing to happen. 
+    if self.use_gpu is True and self.minibatch_size > 1:
+      config = tf.compat.v1.ConfigProto()
+      config.gpu_options.allow_growth=True
+      _ = tf.compat.v1.Session(config=config)
+
     test_model = TestModel()
     acc = test_model.test_model(model_path = model_path, X_dev = X_dev, Y_dev = Y_dev, use_gpu = self.use_gpu)
     ret_dict = queue.get()

@@ -59,6 +59,13 @@ class TestModel():
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
+  parser.add_argument('path')
+  args = parser.parse_args()
+
+  test_model = TestModel()
+  test_model.test_model(args.path)
+  """
+  parser = argparse.ArgumentParser()
   parser.add_argument('iternum')
   parser.add_argument('-c', action='store_true', default=False)
   args = parser.parse_args()
@@ -75,3 +82,4 @@ if __name__ == "__main__":
 
   test_model = TestModel()
   test_model.test_model(model_path)
+  """
