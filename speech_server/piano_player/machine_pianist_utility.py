@@ -11,6 +11,7 @@
 # file as necessary. 
 
 import sys
+import base64
 from pathlib import Path
 
 class MachinePianistUtility:
