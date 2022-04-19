@@ -272,16 +272,20 @@ class MultispeakerSynthesisUtility:
       processed_texts += split_text
     return processed_texts
 
-  # Dynamic class import. Changes sys.path to navigate directories
-  # if necessary. Utilized for emotion detection and
-  # representation classes. 
-  #
-  # Expects module_name Ex) ./home_automation/home_automation
-  # and class_name Ex) HomeAutomation
   def load_class(self,  module_name, class_name):
+    """
+    Dynamic class import. Changes sys.path to navigate directories
+    if necessary. Utilized for emotion detection and
+    representation classes. 
+   
+    Expects module_name Ex) ./home_automation/home_automation
+    and class_name Ex) HomeAutomation
+    """
     module = None
     imported_class = None
     module_file_name = None
+
+    sys_path_appended = False
 
     # Ex) ./home_automation - split by last slash. 
     # Don't bother if the original file is not within a subdirectory.
@@ -290,6 +294,7 @@ class MultispeakerSynthesisUtility:
     if(module_folder_path != "." and len(split_module_name) > 1):
       sys.path.append(module_folder_path)
       module_file_name = split_module_name[1]
+      sys_path_appended = True
     else:
       module_file_name = module_name.replace("./", "")
 
@@ -308,6 +313,9 @@ class MultispeakerSynthesisUtility:
       print("[ERROR] Failed to import class_name " + class_name + ".")
       print(e)
       return None
+
+    if sys_path_appended is True:
+      sys.path.remove(module_folder_path)
 
     return imported_class
 
