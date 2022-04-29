@@ -54,11 +54,13 @@ class MultispeakerSynthesisUtility:
   # Upon initialization, attempt to load the model specified.
   # Allow user to provide model location and override the default.
   def __init__(self, model_num, model_variants_location, speakers_location, 
-               inference_location, inference_class_name, web_server_status = None):
+               inference_location, inference_class_name, web_server_status = None,
+               vocoder = "griffinlim"):
     print("[DEBUG] MultispeakerSynthesisUtility - Initializing model variant "+str(model_num)+"...")
 
     self.speakers_location = speakers_location
     self.web_server_status = web_server_status
+    self._vocoder = vocoder
 
     # Get the first file ending in .pt for the synthesizer. 
     synthesizer_model_fpath = self._get_model_fpath(model_variants_location, 
