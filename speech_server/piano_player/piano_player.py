@@ -143,7 +143,8 @@ class PianoPlayer:
           # Encode the midi as a base 64 string so that it can be sent over POST.
           encoded_midi_file = base64.b64encode(midi_file.read())
           data_to_send = {
-            "midi":str(encoded_midi_file, "utf-8")
+            "midi":str(encoded_midi_file, "utf-8"),
+            "generate_wav": 0
           }
           query = self.web_server_status.cloud_inference_address + self._cloud_inference_api
           query_start = time.time()
