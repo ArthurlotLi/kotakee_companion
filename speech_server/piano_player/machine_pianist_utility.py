@@ -19,7 +19,8 @@ class MachinePianistUtility:
   _inference = None
 
   def __init__(self, model_path: str, inference_folder: str, 
-               inference_class: str):
+               inference_class: str, scaler_X_path: str,
+               scaler_Y_path: str):
     """
     Given the model to use as well as the details of the production
     inference, load the class (and thus the model).
@@ -43,7 +44,9 @@ class MachinePianistUtility:
       return
     
     # Initialize the inference class. Load the model immediately. 
-    self._inference = self._inference_class(model_path= Path(model_path))
+    self._inference = self._inference_class(model_path= Path(model_path),
+                                            scaler_X_path = Path(scaler_X_path),
+                                            scaler_Y_path = Path(scaler_Y_path))
     print("[DEBUG] MachinePianistUtility - Load successful.")
 
   def perform_midi(self, midi_file: Path, temp_file: Path):
