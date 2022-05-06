@@ -1,8 +1,8 @@
-numpy
-keras
-h5py
-pydub
-scipy
-matplotlib
-IPython
-tensorflow
+numpy==1.19.5
+keras==2.6.0
+h5py==3.1.0
+pydub==0.25.1
+scipy==1.7.1
+matplotlib==3.3.4
+IPython==7.28.0
+tensorflow==2.6.0
