@@ -51,7 +51,7 @@ class SimpleUtilities:
       self.timer_list(command)
     elif("timer" in command):
       self.timer_create(command)
-    elif("time" in command):
+    elif("what time" in command):
       self.time_output()
     elif("list alarms" in command or "list all alarms" in command 
          or "all alarms" in command or "delete alarms" in command 
@@ -60,7 +60,7 @@ class SimpleUtilities:
       self.alarm_list(command)
     elif("alarm" in command):
       self.alarm_create(command)
-    elif("date" in command or "day" in command or "month" in command or "today" in command):
+    elif("date" in command or "day is it" in command or "month is it" in command):
       self.date_output()
     elif("repeat" in command):
       # Repeat whatever the user says after the word repeat. 
