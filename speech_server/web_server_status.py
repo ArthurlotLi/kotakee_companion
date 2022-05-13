@@ -158,6 +158,10 @@ class WebServerStatus:
     query = self.web_server_ip_address + "/pianoPlayMidi"
     request_thread = threading.Thread(target=self.execute_post_query, args=(query,data_to_send), daemon=True).start()
 
+  def query_speech_server_piano_stop(self):
+    query = self.web_server_ip_address + "/pianoStopMidi"
+    request_thread = threading.Thread(target=self.execute_get_query, args=(query,), daemon=True).start()
+
   # Executes a simple GET query and expects the status code to be 200. 
   def execute_get_query(self, query):
     print("[DEBUG] Executing GET query: " + query + "\n")

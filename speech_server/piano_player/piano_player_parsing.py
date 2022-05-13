@@ -78,4 +78,8 @@ class PianoPlayerParsing:
           # No song found.
           self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="Sorry, I couldn't find that song.")
 
+    elif ("stop piano" in command or "stop the piano" in command or "stop playing" in command):
+      valid_command = True
+      self.web_server_status.query_speech_server_piano_stop()
+
     return valid_command
