@@ -45,23 +45,22 @@ class PianoPlayerParsing:
           piano_song_filenames.append(file)
           piano_song_names.append(file.replace(".midi","").replace(".mid",""))
 
-
-        # Check if the command includes a song name. 
-        song_file_to_play = None
-        for song_name in piano_song_names:
-            if song_file_to_play is None and song_name in command:
-              # Found a matching song.
-              song_file_to_play = piano_song_filenames[piano_song_names.index(song_name)]
-          
-        if song_file_to_play is not None:
-          # Found a song. Play it.
-          if "virtual" in command or "local" in command:
-            self.piano_player.local_load_and_play(self.piano_songs_location + "/" + song_file_to_play)
-          else:
-            self.piano_player.send_midi_to_web_server(self.piano_songs_location + "/" + song_file_to_play)
+      # Check if the command includes a song name. 
+      song_file_to_play = None
+      for song_name in piano_song_names:
+        if song_file_to_play is None and song_name in command:
+          # Found a matching song.
+          song_file_to_play = piano_song_filenames[piano_song_names.index(song_name)]
+        
+      if song_file_to_play is not None:
+        # Found a song. Play it.
+        if "virtual" in command or "local" in command:
+          self.piano_player.local_load_and_play(self.piano_songs_location + "/" + song_file_to_play)
         else:
-          # No song found.
-          self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="Sorry, I couldn't find that song.")
+          self.piano_player.send_midi_to_web_server(self.piano_songs_location + "/" + song_file_to_play)
+      else:
+        # No song found.
+        self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="Sorry, I couldn't find that song.")
 
     elif("list piano" in command or "list songs" in command):
       # If not, ask the user which file they want to play. 
