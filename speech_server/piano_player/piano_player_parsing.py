@@ -45,28 +45,13 @@ class PianoPlayerParsing:
           piano_song_filenames.append(file)
           piano_song_names.append(file.replace(".midi","").replace(".mid",""))
 
-      if len(piano_song_names) == 0:
-        self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="I don't have any piano songs right now.")
-      else:
+
         # Check if the command includes a song name. 
         song_file_to_play = None
         for song_name in piano_song_names:
             if song_file_to_play is None and song_name in command:
               # Found a matching song.
               song_file_to_play = piano_song_filenames[piano_song_names.index(song_name)]
-
-        if song_file_to_play is None:
-          # If not, ask the user which file they want to play. 
-          piano_song_prompt = "Please pick a song: "
-          for song_name in piano_song_names:
-            piano_song_prompt = piano_song_prompt + song_name + ", "
-          
-          user_response = self.speech_listen.listen_response(prompt=piano_song_prompt, execute_chime = True)
-          if user_response is not None:
-            for song_name in piano_song_names:
-              if song_file_to_play is None and song_name in user_response:
-                # Found a matching song.
-                song_file_to_play = piano_song_filenames[piano_song_names.index(song_name)]
           
         if song_file_to_play is not None:
           # Found a song. Play it.
@@ -77,6 +62,15 @@ class PianoPlayerParsing:
         else:
           # No song found.
           self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="Sorry, I couldn't find that song.")
+
+    elif("list piano" in command or "list songs" in command):
+      # If not, ask the user which file they want to play. 
+      piano_song_prompt = "Here are all the piano songs I know: "
+      for song_name in piano_song_names:
+        piano_song_prompt = piano_song_prompt + song_name + ", "
+
+      self.speech_listen.blocking_speak_event(event_type="speak_text", event_content=piano_song_prompt)
+      valid_command=True
 
     elif ("stop piano" in command or "stop the piano" in command or "stop playing" in command):
       valid_command = True
