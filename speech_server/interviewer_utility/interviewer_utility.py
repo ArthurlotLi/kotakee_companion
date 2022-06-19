@@ -9,7 +9,7 @@ from random import sample
 from pathlib import Path
 
 _generator_folder = "../../endgame_preparation/question_generator"
-_generator_questions = _generator_folder + "/questions"
+_generator_questions = "../../endgame_preparation/questions"
 _generator_class = "GenerateQuestion"
 
 _interview_categories = ["mle_theory"] # TODO: "behavioral", "mle_system_design", "statistics", "linear algebra", "counting", ...
@@ -51,7 +51,8 @@ class InterviewerUtility:
 
   def output_question(self, category):
     if self._generator is not None:
-      question =  self._generator.generate_question(category, questions_to_skip=self.answered_questions, questions_folder = Path(_generator_questions))
+      question =  self._generator.generate_question(category, questions_to_skip=self.answered_questions, 
+                                                    questions_folder = Path(_generator_questions))
       question_text = "Question %d: %s" % (len(self.answered_questions) + 1, question)
       self.answered_questions.append(question)
 
