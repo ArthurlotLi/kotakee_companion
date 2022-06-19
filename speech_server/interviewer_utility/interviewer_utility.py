@@ -38,11 +38,10 @@ class InterviewerUtility:
     """
     
     if(self._generator is not None and ("interview" in command)):
-      self.answered_questions = []
-      output = "Okay, welcome to your new interview."
-      self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=output) 
-      self.output_question(category = sample(_interview_categories, 1)[0])
-    elif(self._generator is not None and ("next question" in command or "another question" in command)):
+      if("new" in command or len(self.answered_questions) == 0): 
+        self.answered_questions = []
+        output = "Hello Arthur, welcome to your new interview."
+        self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=output) 
       self.output_question(category = sample(_interview_categories, 1)[0])
     else:
       return False
