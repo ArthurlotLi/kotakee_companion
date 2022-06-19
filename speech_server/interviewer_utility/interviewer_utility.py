@@ -40,7 +40,7 @@ class InterviewerUtility:
     if(self._generator is not None and ("interview" in command or "question" in command)):
       if("new" in command or len(self.answered_questions) == 0): 
         self.answered_questions = []
-        output = "It's nice to meet you Arthur welcome to your new interview."
+        output = "It's nice to meet you Arthur thank you for coming today. Welcome to your new interview. My name is " + self.speech_speak.multispeaker_synthesis_speaker + " and I will be your interviewer today. Let's begin."
         self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=output) 
       self.output_question(category = sample(_interview_categories, 1)[0])
     else:
