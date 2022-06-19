@@ -37,10 +37,10 @@ class InterviewerUtility:
     Level 1 standard routine. Return True if the command applies.
     """
     
-    if(self._generator is not None and ("interview" in command)):
+    if(self._generator is not None and ("interview" in command or "question" in command)):
       if("new" in command or len(self.answered_questions) == 0): 
         self.answered_questions = []
-        output = "Hello Arthur, welcome to your new interview."
+        output = "It's nice to meet you Arthur welcome to your new interview."
         self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=output) 
       self.output_question(category = sample(_interview_categories, 1)[0])
     else:
