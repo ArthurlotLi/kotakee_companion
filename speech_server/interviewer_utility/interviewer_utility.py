@@ -42,16 +42,24 @@ class InterviewerUtility:
         self.answered_questions = []
         output = "It's nice to meet you Arthur thank you for coming today. Welcome to your new interview. My name is " + self.speech_speak.multispeaker_synthesis_speaker + " and I will be your interviewer today. Let's begin."
         self.speech_speak.blocking_speak_event(event_type="speak_text", event_content=output) 
-      self.output_question(category = sample(_interview_categories, 1)[0])
+
+      question_types = 0
+      if "standalone" in command:
+        question_types = 1
+      elif "generated" in command:
+        question_types = 2
+
+      self.output_question(category = sample(_interview_categories, 1)[0], question_types =question_types)
     else:
       return False
     
     return True
 
-  def output_question(self, category):
+  def output_question(self, category, question_types):
     if self._generator is not None:
       question =  self._generator.generate_question(category, questions_to_skip=self.answered_questions, 
-                                                    questions_folder = Path(_generator_questions))
+                                                    questions_folder = Path(_generator_questions),
+                                                    question_types = question_types)
       question_text = "Question %d: %s" % (len(self.answered_questions) + 1, question)
       self.answered_questions.append(question)
 
