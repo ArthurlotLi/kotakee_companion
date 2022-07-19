@@ -8,6 +8,12 @@ For more information, please see [Hobby Automation](http://hobbyautomation.com/)
 
 ![Kotakee Companion Architecture](https://i.imgur.com/nl6ncDA.png "Companion Architecture")
 
+![Kotakee Companion Avatar](https://i.imgur.com/XfAVow0.png "Companion Avatar")
+
+![Kotakee Companion Avatar](https://i.imgur.com/Kf5f2s5.png "Companion Avatar")
+
+![Kotakee Companion Avatar](https://i.imgur.com/T48FdAx.png "Companion Avatar")
+
 ### Prerequisites
 
 1. Python3 must be installed - version 3.8.X
