@@ -6,8 +6,6 @@ Contains both AI Assistant base code in "speech_server" as well as Trigger Word 
 
 For more information, please see [Hobby Automation](http://hobbyautomation.com/).
 
----
-
 ![Kotakee Companion Architecture](https://i.imgur.com/nl6ncDA.png "Companion Architecture")
 
 ---
