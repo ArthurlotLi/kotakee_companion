@@ -1,10 +1,12 @@
 # Kotakee Companion - Humanity's Companion
 
-Humanity's companion. AI Assistant with a suite of tools to help you go about your day. Interfaces with KotakeeOS Home Automation, Textual Emotion Detection, and Multispeaker Synthesis, among others.
+AI Assistant with a suite of tools to help you go about your day. Interfaces with KotakeeOS Home Automation, Textual Emotion Detection, and Multispeaker Synthesis, among others.
 
 Contains both AI Assistant base code in "speech_server" as well as Trigger Word Detection for voice activation wake-up in "trigger_word_detection". 
 
 For more information, please see [Hobby Automation](http://hobbyautomation.com/).
+
+![Kotakee Companion Architecture](https://i.imgur.com/nl6ncDA.png "Companion Architecture")
 
 ### Prerequisites
 
