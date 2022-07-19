@@ -6,17 +6,11 @@ Contains both AI Assistant base code in "speech_server" as well as Trigger Word 
 
 For more information, please see [Hobby Automation](http://hobbyautomation.com/).
 
-### System Architecture
+---
 
 ![Kotakee Companion Architecture](https://i.imgur.com/nl6ncDA.png "Companion Architecture")
 
-### Avatar Screenshots
-
-![Kotakee Companion Avatar](https://i.imgur.com/XfAVow0.png "Companion Avatar")
-
-![Kotakee Companion Avatar](https://i.imgur.com/Kf5f2s5.png "Companion Avatar")
-
-![Kotakee Companion Avatar](https://i.imgur.com/T48FdAx.png "Companion Avatar")
+---
 
 ### Prerequisites
 
@@ -30,4 +24,12 @@ For more information, please see [Hobby Automation](http://hobbyautomation.com/)
 Note that, on mac, you might need to update your xcode command line tools. If you have issues with that, reference the following to delete and redownload xcode tools:
 
 https://stackoverflow.com/questions/34617452/how-to-update-xcode-from-command-line
+
+---
+
+![Kotakee Companion Avatar](https://i.imgur.com/XfAVow0.png "Companion Avatar")
+
+![Kotakee Companion Avatar](https://i.imgur.com/Kf5f2s5.png "Companion Avatar")
+
+![Kotakee Companion Avatar](https://i.imgur.com/T48FdAx.png "Companion Avatar")
 
