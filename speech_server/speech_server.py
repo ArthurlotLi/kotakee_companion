@@ -74,7 +74,7 @@ class SpeechServer:
   speech_speak_multispeaker_synthesis_models_location = "../../multispeaker_synthesis/production_models"
   speech_speak_multispeaker_synthesis_speakers_location = "../assets_audio/multispeaker_synthesis_speakers"
   speech_speak_multispeaker_synthesis_model_num = "model6"
-  speech_speak_multispeaker_synthesis_speaker = "MIKLEO"
+  speech_speak_multispeaker_synthesis_speaker = "VELVET"
   speech_speak_use_multispeaker_synthesis = None
 
   speech_listen_led_state_on = 1
