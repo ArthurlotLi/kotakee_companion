@@ -81,8 +81,8 @@ class SpeechServer:
   speech_listen_led_state_off = 0
   speech_listen_led_room_id = 2
   speech_listen_led_action_id = 51
-  web_server_ip_address = "http://192.168.0.197:8080"
-  cloud_inference_server_address = "http://192.168.0.148:9121"
+  web_server_ip_address = "http://192.168.86.197:8080"
+  cloud_inference_server_address = "http://192.168.86.148:9191"
 
   # Required upon initialization. 
   trigger_word_iternum = None
