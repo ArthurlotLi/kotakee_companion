@@ -16,6 +16,7 @@ class LoopUtility:
   module_management = {}
 
   duration_seconds = 1 # Be responsible and check every _ seconds.
+  duration_seconds_after_starting_playing = 40 # We wait this long until seeing if the song has finished playing.
   
   speech_speak = None
   # Passed by calling modules, whether active or passive. This
@@ -53,8 +54,11 @@ class LoopUtility:
   def activate_event(self):
     print("[INFO] Piano Loop event triggered. Checking if server is playing a song.")
 
+    wait_duration = self.duration_seconds
+
     # Check if server is playing.
-    if self.web_server_status.query_speech_server_piano_status():
+    if self.web_server_status.query_speech_server_piano_status() is False:
+      # If not playing, choose a song. 
       # If we need to start from beginning again, shuffle. 
       if self.current_song == len(self.songs):
         self.current_song = 0
@@ -69,11 +73,12 @@ class LoopUtility:
         self.piano_player.send_midi_to_web_server(self.piano_songs_location + "/" + song_file_to_play)
 
       self.played_songs+=1
+      wait_duration = self.duration_seconds_after_starting_playing
 
     if self.played_songs < self.max_songs:
       # Keep going. 
       self.module_management["add_module_passive"] = {
-        "duration_seconds" : self.duration_seconds
+        "duration_seconds" : wait_duration
       }
     else:
       print("[DEBUG] Max songs played. All done.")

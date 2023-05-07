@@ -81,6 +81,7 @@ class PianoPlayerParsing:
 
 
     elif ("loop piano" in command or "loop play the piano" in command 
+          or "loop the piano" in command or "loop piano songs" in command
           or "play background piano" in command or "play me something" in command):
       
       # Get how many times to loop.
