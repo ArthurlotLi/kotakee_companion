@@ -111,7 +111,7 @@ class PianoPlayerParsing:
           additional_data=loop_additional_data,
           id = self.looper_subprocess_id)
         
-        self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="Okay, playing %d songs on the piano." % loop_amount)
+        self.speech_speak.blocking_speak_event(event_type="speak_text", event_content="Okay playing %d songs on the piano." % loop_amount)
 
     return valid_command
   
