@@ -63,6 +63,8 @@ class LoopUtility:
       if self.current_song == len(self.songs):
         self.current_song = 0
         random.shuffle(self.songs)
+      else:
+        self.current_song += 1
 
       song_file_to_play = self.songs[self.current_song]
 

@@ -32,8 +32,8 @@ class PianoPlayer:
   # human-like performance data.
   _use_machine_pianist = True
   _machine_pianist_model_path = "../../machine_pianist/production_models/model6/machine_pianist.h5"
-  _machine_pianist_scaler_X_path = "../../machine_pianist/saved_models/model6_scaler_X.bin"
-  _machine_pianist_scaler_Y_path = "../../machine_pianist/saved_models/model6_scaler_Y.bin"
+  _machine_pianist_scaler_X_path = "../../machine_pianist/production_models/model6/model6_scaler_X.bin"
+  _machine_pianist_scaler_Y_path = "../../machine_pianist/production_models/model6/model6_scaler_Y.bin"
   _machine_pianist_inference_folder = "../../machine_pianist/machine_pianist_inference"
   _machine_pianist_inference_class = "MachinePianist"
   _machine_pianist_utility = None
