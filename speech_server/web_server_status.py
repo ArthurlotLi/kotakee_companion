@@ -162,6 +162,21 @@ class WebServerStatus:
     query = self.web_server_ip_address + "/pianoStopMidi"
     request_thread = threading.Thread(target=self.execute_get_query, args=(query,), daemon=True).start()
 
+  # Returns True if pianoStatus is true (currently playing.)
+  def query_speech_server_piano_status(self):
+    query = self.web_server_ip_address + "/pianoStatus"
+    print("[DEBUG] Querying server: " + query)
+    try:
+      response = requests.get(query)
+      if(response.status_code == 200):
+        return True
+      elif(response.status_code != 204):
+        print("[WARNING] Server rejected /pianoStatus request with status code " + str(response.status_code) + ".")
+      return False
+    except:
+      print("[WARNING] query_speech_server_piano_status unable to connect to server.")
+    return False
+
   # Executes a simple GET query and expects the status code to be 200. 
   def execute_get_query(self, query):
     print("[DEBUG] Executing GET query: " + query + "\n")

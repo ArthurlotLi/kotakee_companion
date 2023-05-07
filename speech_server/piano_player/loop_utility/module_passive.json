@@ -1,0 +1,11 @@
+{
+  "class_name" : "LoopUtility",
+
+  "require_online" : "False",
+  "require_web_server" : "True",
+  "init_on_startup" : "True",
+
+  "require_speech_speak" : "True",
+  "require_speech_listen" : "False",
+  "require_web_server_status" : "True"
+}
